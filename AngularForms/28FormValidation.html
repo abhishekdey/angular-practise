@@ -1,0 +1,46 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+    <script src="../angular.js"></script>
+    <script type="text/javascript">
+        angular.module("myApp", [])
+                .directive('confirmOnExit', function () {
+                    return {
+                        link: function ($scope, elem, attrs) {
+                            window.onbeforeunload = function () {
+                                if ($scope.myForm.$dirty) {
+                                    return "The form is dirty, do you want to stay on the page?";
+                                }
+                            };
+                            $scope.$on('$locationChangeStart', function (event, next, current) {
+                                if ($scope.myForm.$dirty) {
+                                    if (!confirm("The form is dirty, do you want to stay on the page?")) {
+                                        event.preventDefault();
+                                    }
+                                }
+                            });
+                        }
+                    };
+                }).controller('Ctrl', function ($scope) {
+                    var initial = {text: 'initial value'};
+                    $scope.myModel = angular.copy(initial);
+                    $scope.revert = function () {
+                        $scope.myModel = angular.copy(initial);
+                        $scope.myForm.$setPristine();
+                    }
+                });
+    </script>
+</head>
+<body>
+<form name="myForm" ng-controller="Ctrl" confirm-on-exit>
+    myModel.text: <input name="input" ng-model="myModel.text">
+
+    <p>myModel.text = {{myModel.text}}</p>
+
+    <p>$pristine = {{myForm.$pristine}}</p>
+
+    <p>$dirty = {{myForm.$dirty}}</p>
+    <button ng-click="revert()">Set pristine</button>
+</form>
+</body>
+</html>

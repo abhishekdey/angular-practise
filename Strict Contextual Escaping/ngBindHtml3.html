@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Explicitly Trusting HTML With $sce</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="app">
+
+
+<section ng-controller="mainController as main">
+    <nav>
+        <ul>
+            <li ng-repeat="link in main.links"
+                ng-bind-html="link">
+            </li>
+        </ul>
+    </nav>
+
+</section>
+
+<script>
+
+    var app = angular.module("app", []);
+
+    app.controller("mainController", function($sce) {
+
+        var main = this;
+        main.links = [
+            "<a onmouseover='alert(\"careful!\")' href='http://google.com'>Google</a>",
+            "<a href='http://odetocode.com'>OdeToCode</a>",
+            "<a href='http://twitter.com'>Twitter</a>"
+        ];
+
+        for (var i = 0; i < main.links.length; i++) {
+            main.links[i] = $sce.trustAsHtml(main.links[i]);
+        }
+    });
+
+    /*
+    The only difference between this version of the controller code and the previous version is
+    the for loop to mark the strings as trusted. When binding to each trusted link using ngBindHtml,
+    the HTML will no longer go through the $sanitize service. This means the first link will now enter
+    the DOM with an onmouseover attribute and carry along executable JavaScript code.
+    */
+
+</script>
+</body>
+</html>

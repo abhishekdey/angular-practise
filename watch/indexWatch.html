@@ -1,0 +1,42 @@
+<!--The $rootScope is the top-most scope. An app can have only one $rootScope
+ which will be shared among all the components of an app.
+ Hence it acts like a global variable. All other $scopes are children of the $rootScope.-->
+
+
+<!--
+    When you use ng-model with $rootScope objects then AngularJS
+     updates those objects under a specific $scope of a controller but not at global level $rootScope.
+    Create a private $scope for each controller to bind it to the view.
+-->
+
+<!doctype html>
+<html>
+<body ng-app="myApp">
+<div ng-controller="Ctrl1" style="border:2px solid blue; padding:5px">
+    Hello {{msg}}!
+    <br />
+    Hello {{name}}! (rootScope)
+</div>
+<br />
+<div ng-controller="Ctrl2" style="border:2px solid green; padding:5px">
+    Hello {{msg}}!
+    <br />
+    Hey {{myName}}!
+    <br />
+    Hi {{name}}! (rootScope)
+</div>
+<script src="../angular.js"></script>
+<script>
+    var app = angular.module('myApp', []);
+
+    app.controller('Ctrl1', function ($scope, $rootScope) {
+        $scope.msg = 'World';
+        $rootScope.name = 'AngularJS';
+    });
+    app.controller('Ctrl2', function ($scope, $rootScope) {
+        $scope.msg = 'Dot Net Tricks';
+        $scope.myName = $rootScope.name;
+    });
+</script>
+</body>
+</html>

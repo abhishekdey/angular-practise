@@ -1,0 +1,6 @@
+https://api.github.com/users/abhishekdey
+https://github.com/angular/angular.js/wiki/Understanding-Scopes
+https://umur.io/angularjs-directives-using-isolated-scope-with-attributes/
+
+
+Note: That in JavaScript arrays and functions are also objects

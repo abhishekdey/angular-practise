@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <title>ngRepeat</title>
+    <script src="../angular.js"></script>
+</head>
+<body>
+
+<!--
+    We have an array of text in a property called items. The below code is ideal when the items array consists of only string data.
+    However, this cannot be used when the items array contains objects.-->
+
+
+<!--The AngularJS documentation for ‘select’ says to use ng-options instead of ng-repeat in this scenario.
+    The reason behind is, option element can only hold string type as its value. -->
+
+
+<div ng-controller="Test">
+
+    <p>selected item is : {{selectedItem}}</p>
+
+    <!--cannot set the selectedItem model to the object inside items. -->
+    <select ng-model="selectedItem">
+        <option ng-repeat="item in items" value="{{item}}">{{item}}</option>
+    </select>
+
+    <script>
+        var app = angular.module('app',[]);
+        app.controller('Test',function($scope){
+        $scope.items = ['one','two','three','four']
+    });
+    </script>
+
+</div>
+
+</body>
+</html>

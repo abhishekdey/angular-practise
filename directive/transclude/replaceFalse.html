@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>replace False</title>
+</head>
+
+<body ng-app="scopes">
+
+<div ng-controller="Ctrl" class="ng-scope">
+    <my-dir><h3>existing content was override by children</h3></my-dir>
+</div>
+
+<script src="../../angular.js"></script>
+<script>
+    /*http://stackoverflow.com/questions/22497706/angular-directive-replace-true*/
+
+    /*the element's (to which the directive is being applied) children will be lost*/
+    angular.module('scopes', [])
+            .controller('Ctrl', function($scope) {
+                $scope.title = "child override the parent";
+            })
+            .directive('myDir', function() {
+                return {
+                    restrict: 'E',
+                    replace: false,  /*the template replaces the html template*/
+                    template: '<div>{{title}}</div>'
+                };
+            });
+</script>
+
+</body>
+
+</html>

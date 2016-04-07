@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Form</title>
+    <script src="../angular.js"></script>
+</head>
+
+<body ng-app="myapp">
+
+<div ng-controller="MyController" >
+    <form>
+        <input type="text" name="firstName" ng-model="myForm.firstName"> First name <br/>
+        <input type="text" name="lastName"  ng-model="myForm.lastName"> Last name <br/>
+    </form>
+
+
+    <!--interpolation directives will update the values while typing-->
+    <div>
+        {{myForm.firstName}} {{myForm.lastName}}
+    </div>
+
+
+</div>
+
+<script>
+    angular.module("myapp", [])
+            .controller("MyController", function($scope) {
+                $scope.myForm = {};
+                $scope.myForm.firstName = "Jakob";
+                $scope.myForm.lastName  = "Jenkov";
+            });
+</script>
+
+
+
+
+    <div style="margin: 50px 0"></div>
+                        <!-----------------------------Binding Checkboxes------------------------------------>
+
+    <input type="checkbox" ng-model="myForm.wantNewsletter">
+
+    <span>{{myForm.wantNewsletter}}</span>
+
+
+
+    <div style="margin: 50px 0"></div>
+                        <!-------------------------- Binding Radio Buttons ---------------------------------->
+                     <!--If you have a group of radio buttons, just bind them all to the same model property.-->
+    <input type="radio" ng-model="myForm.whichNewsletter" value="weeklyNews">
+    <input type="radio" ng-model="myForm.whichNewsletter" value="monthlyNews">
+
+
+
+     <div style="margin: 50px 0"></div>
+<!-----------------------------Binding Select Boxes------------------------------------>
+
+
+<div ng-controller="MyController" >
+    <form>
+        <select ng-model="myForm.car">
+            <option value="nissan">Nissan</option>
+            <option value="toyota">Toyota</option>
+            <option value="fiat">Fiat</option>
+        </select>
+    </form>
+
+    <div>
+        {{myForm.car}}
+    </div>
+</div>
+
+<script>
+    angular.module("myapp", [])
+            .controller("MyController", function($scope) {
+                $scope.myForm = {};
+                $scope.myForm.car  = "nissan";
+            } );
+</script>
+
+
+
+
+
+                                    <div style="margin: 50px 0"></div>
+                                    <!----------------------ng-options -------------->
+
+<div ng-controller="MyController" ng-app="myapp1">
+    <form>
+        <select ng-model="myForm.car"
+                ng-options="obj.id as obj.name for obj in myForm.options">
+                      <!-- optionBinding expr     dataSource expr -->
+        </select>
+
+        <!-- obj.id as the value of each option element and the obj.name as the label of each option element-->
+
+        <!-- create option groups using obj.id as obj.name group by obj.type-->
+    </form>
+
+    <div>
+        {{myForm.car}}
+    </div>
+</div>
+
+<script>
+    angular.module("myapp1", [])
+            .controller("MyController", function($scope) {
+                $scope.myForm = {};
+                $scope.myForm.car  = "nissan";
+                $scope.myForm.options = [
+                    { id : "nissan", name: "Nissan" }
+                    ,{ id : "toyota", name: "Toyota" }
+                    ,{ id : "fiat"  , name: "Fiat" }
+                ];
+
+            } );
+</script>
+
+
+
+
+
+
+            <div style="margin: 50px 0">
+                    <!--Empty Options-->
+    <form>
+        <select ng-model="myForm.car"
+                ng-options="obj.id as obj.name for obj in myForm.options">
+            <option value="">Please choose a car</option>
+        </select>
+    </form>
+
+    <div>
+        {{myForm.car}}
+    </div>
+    </div>
+
+    <script>
+        angular.module("myapp", [])
+                .controller("MyController", function($scope) {
+                    $scope.myForm = {};
+                    $scope.myForm.car  = "nissan";
+                    $scope.myForm.options = [
+                        { id : "nissan", name: "Nissan" }
+                        ,{ id : "toyota", name: "Toyota" }
+                        ,{ id : "fiat"  , name: "Fiat" }
+                    ];
+                });
+    </script>
+
+
+
+        <div style="margin: 50px 0" ></div>
+        <!--Selecting Multiple Options-->
+
+        <div ng-controller="MyController"  ng-app="myapp2">
+            <form>
+                <select multiple="true" ng-model="myForm.car"
+                        ng-options="obj.id as obj.name for obj in myForm.options">
+                </select>
+            </form>
+
+            <div>
+                {{myForm.car}}
+            </div>
+        </div>
+
+        <script>
+            angular.module("myapp2", [])
+                    .controller("MyController", function($scope) {
+                        $scope.myForm = {};
+                        $scope.myForm.car  = ["nissan"];
+
+                        $scope.myForm.options = [
+                            { id : "nissan", name: "Nissan" }
+                            ,{ id : "toyota", name: "Toyota" }
+                            ,{ id : "fiat"  , name: "Fiat" }
+                        ];
+                    });
+        </script>
+</body>
+</html>

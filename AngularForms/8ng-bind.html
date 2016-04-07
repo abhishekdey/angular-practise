@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ng-bind</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="bindExample">
+
+
+<!-- ng-bind has one-way data binding ($scope -> view).
+It has a shortcut {{ val }} which displays the scope value $scope.val inserted into html where val is a variable name.-->
+
+
+<script>
+    angular.module('bindExample', [])
+            .controller('ExampleController', ['$scope', function($scope) {
+                $scope.name = 'Whirled';
+            }]);
+</script>
+<div ng-controller="ExampleController">
+    <label>Enter name: <input type="text" ng-model="name"></label><br>
+    Hello <span ng-bind="name"></span>!
+</div>
+
+
+</body>
+</html>

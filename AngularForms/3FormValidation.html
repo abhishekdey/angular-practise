@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FormValidation 3</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="myapp">
+<style>
+    .fieldValid {
+        border: 1px solid red;
+    }
+    .fieldInvalid {
+        border: 1px solid blue;
+    }
+</style>
+
+<div ng-controller="MyController" >
+    <form name="myFormNg" >
+        <input type="text" ng-class="myForm.getFormFieldCssClass(myFormNg.name)"
+               id="name" name="name" ng-model="myForm.name" ng-minlength="2"> Name <br/>
+
+
+        <!--This directive uses the value of the myFormNg.name.$invalid validation property
+        to determine if the div should be shown or not. -->
+
+        <div ng-show="myFormNg.name.$invalid">
+            You must enter a valid name.
+        </div>
+
+        <!--access the $pristine, $dirty, $valid and $invalid properties of the ngFormController too-->
+        <button ng-disabled="myFormNg.$invalid">Submit Form</button>
+    </form>
+</div>
+
+<script>
+    angular.module("myapp", [])
+            .controller("MyController", function($scope, $http) {
+                $scope.myForm = {};
+
+                $scope.myForm.getFormFieldCssClass = function(ngModelController) {
+
+                    //console.log("getting css class: " + ngModelController.$valid) ;
+                    if(ngModelController.$pristine) return "";
+                    return ngModelController.$valid ? "fieldValid" : "fieldInvalid";
+                }
+            } );
+</script>
+
+</body>
+</html>

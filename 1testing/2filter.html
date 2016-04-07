@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <script src="../angular.js"></script>
+    <title>Filter</title>
+</head>
+<body>
+<div ng-controller="DemoController">
+    <input type="text" ng-model="name">
+</div>
+
+<script>
+    var app = angular.module("app",[]);
+    app.controller('DemoController', ['$scope', '$filter',
+        function($scope, $filter) {
+            $scope.name = $filter('lowercase')('Ari');
+        }]);
+</script>
+</body>
+</html>

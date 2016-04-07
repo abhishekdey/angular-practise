@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ngOptions For Array data</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="app">
+
+<!--    label for value in array
+      loop through the array, and generate option element containing the current value
+
+    if primitive only label
+    if objects then label.objectName as below example
+-->
+
+<div ng-controller="Test">
+
+    <p>selected item is : {{selectedItem}}</p>
+    <p> age of selected item is : {{selectedItem.age}} </p>
+
+    <!--Now the selectedItem is bound to an object instead of the string value-->
+    <select ng-model="selectedItem" ng-options="item.name for item in items">
+    </select>
+
+    <script>
+        var app = angular.module('app',[]);
+        app.controller('Test',function($scope){
+            $scope.items = [{name: 'one', age: 30 },{ name: 'two', age: 27 },{ name: 'three', age: 50 }];
+            $scope.selectedItem = $scope.items[0];
+        });
+    </script>
+
+</div>
+</body>
+</html>

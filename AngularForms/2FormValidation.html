@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Validation</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="myapp">
+
+
+            <!--ng-minlength + ng-maxlength-->
+
+            <!--text in the input field is less than 5 or more than 12 characters long,
+                the value from the input field will not be copied into the $scope.myForm.name property.
+            -->
+
+            <div ng-controller="MyController" >
+                <form>
+                    <input type="text" id="name" ng-model="myForm.name" ng-minlength="5" ng-maxlength="12"> Name <br/>
+                </form>
+
+                <div>
+                    {{myForm.name}}
+                </div>
+            </div>
+
+            <script>
+                angular.module("myapp", [])
+                        .controller("MyController", function($scope) {
+                            $scope.myForm = {};
+                            $scope.myForm.name = "Jakob Jenkov";
+                        } );
+            </script>
+
+
+
+
+            <div style="margin: 50px 0"></div>
+              <!--ng-pattern-->
+
+
+            <input type="text" id="myName" ng-model="myForm.name" ng-pattern="/^\d+$/"> Name <br/>
+
+                             <!--ng-required-->
+        <!--The ng-required directive checks if the value of the form field is empty or not.
+         Actually, you just use the required attribute of HTML5, and AngularJS detects it automatically. -->
+
+        <!--$pristine    	True if the form has not been changed (no form fields has changed),
+                            false if some fields have been changed.
+
+        $dirty 	The reverse of $pristine - false if the form has not been changed -
+                                            true if it has.
+
+        $valid 	True if the form field (or the whole form = all form fields) is valid.
+                False if not.
+
+        $invalid 	The reverse of the $valid - false if the field (or all fields in the form) is valid,
+                                                true if the field (or a single field in the for) is invalid.
+
+        $touched 	Boolean True if the input has been blurred.  -->
+
+</body>
+</html>

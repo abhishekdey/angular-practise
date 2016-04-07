@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Reset</title>
+</head>
+<body>
+<div ng-controller="MyCtrl">
+    <form reset-directive="myModel" name="form">
+        <input type="text" ng-model="myModel.foo" />
+        <input type="text" ng-model="myModel.bar" />
+        <input type="reset" value="Reset" />
+        <pre>myModel: {{ myModel | json }}</pre>
+        <pre>myModelCopy: {{ myModelCopy | json }}</pre>
+        <pre>form pristine: {{ form.$pristine }}</pre>
+    </form>
+</div>
+
+<script src="../angular.js"></script>
+<script>
+    var myApp = angular.module( 'myApp', [] );
+
+    myApp.controller( 'MyCtrl', [ '$scope', function ( $scope ) {
+        $scope.myModel = { foo: 'Boop', bar: 'Beep' };
+        $scope.myModelCopy = angular.copy( $scope.myModel );
+    }]);
+
+    myApp.directive( 'resetDirective', [ '$parse', function ( $parse ) {
+        return function( scope, element, attr ) {
+            var fn = $parse( attr.resetDirective );
+            var masterModel = angular.copy( fn( scope ) );
+
+            // Error check to see if expression returned a model
+            if ( !fn.assign ) {
+                throw Error( 'Expression is required to be a model: ' + attr.resetDirective );
+            }
+
+            element.bind( 'reset', function ( event ) {
+                scope.$apply( function () {
+                    fn.assign( scope, angular.copy( masterModel ) );
+                    scope.form.$setPristine();
+                });
+
+                // TODO: memoize prevention method
+                if ( event.preventDefault ) {
+                    return event.preventDefault();
+                }
+                else {
+                    return false;
+                }
+            });
+        };
+    }]);
+</script>
+</body>
+</html>

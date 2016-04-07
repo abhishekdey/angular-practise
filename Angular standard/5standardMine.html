@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-controller="myController">
+
+<div ng-repeat="order in orderData">
+    {{order.lastUpdated}}
+</div>
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myController', function ($scope, myService) {
+
+        /* asynchronous progress by providing a "promise" as a return from a call returns are single objects*/
+        $scope.getOrderData = function () {
+            myService.getOrderData()
+                    .then(function (orderData) {
+                        if (orderData.data) {
+                            $scope.orderData = orderData.data.responseEntity;
+                        }
+                    }, function (error) {
+                        // report something
+                    }, function (progress) {
+                        // report progress
+                    });
+        };
+
+        $scope.init = function () {
+            $scope.getOrderData();
+        };
+
+        $scope.init();
+    });
+
+    /*The resolve function links to the .then function in our controller i.e. all is well, so we can keep our promise and resolve it.
+
+     The reject function links to the .catch function in our controller i.e. something went wrong, so we can't keep our promise and need to reject it.*/
+    app.service('myService', function (myFactory, $q) {
+        var deferred = $q.defer();
+
+        this.getOrderData = function () {
+            var promise = myFactory.getOrderData();
+
+            promise
+                    .success(function (response) {
+                        //deferred.resolve({'data': angular.copy(response), 'message': ''});
+                        return response;
+                    })
+                    .error(function (msg, code) {
+                        deferred.reject(msg);
+                    });
+
+            return deferred.promise;
+        };
+    });
+
+    app.factory('myFactory', function ($http) {
+        var orderDataObj = {};
+
+        orderDataObj.getOrderData = function () {
+            return $http.get('http://dcidcfpaweb01.dci.local//priorauth-web/orders');
+        };
+        return orderDataObj;
+    });
+</script>
+</body>
+</html>

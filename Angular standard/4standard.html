@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+
+<!-- In AngularJS, the semantics of using a promise are:-->
+<script>
+    var promise = callThatRunsInBackground();
+
+    promise.then(
+            function (answer) {
+                // do something
+            },
+            function (error) {
+                // report something
+            },
+            function (progress) {
+                // report progress
+            });
+</script>
+
+
+<script>
+
+    /*Angular services return promises: $http, $interval, $timeout, for example. All promise returns are single objects*/
+
+    /*the promise returns an object with four keys: data, status, headers, and config.
+     Those are the same as the four parameters fed to the success callback if you use those semantics:*/
+
+
+    $http.get('http://dcidcfpaweb01.dci.local//priorauth-web/order/insightPanel/88350-1220')
+            .success(function (data, status, headers, config) {
+                $scope.movieContent = data;
+            });
+
+    // is the same as
+    var promise = $http.get('/api/v1/movies/avengers');
+
+    promise.then(
+            function (payload) {
+                $scope.movieContent = payload.data;
+            });
+</script>
+
+
+<script>
+    /*how do you pass a return back to a caller when the service returns before a callback is triggered?*/
+
+    /*use promises as a sort of 'callback handle' - do something asynchronous in a service, return a promise,
+     and when the asynchronous work is done*/
+
+
+    angular.module('atTheMoviesApp', [])
+            .controller('GetMoviesCtrl',
+            function ($log, $scope, movieService) {
+                $scope.getMovieListing = function (movie) {
+                    var promise =
+                            movieService.getMovie('avengers');
+                    promise.then(
+                            function (payload) {
+                                $scope.listingData = payload.data;
+                            },
+                            function (errorPayload) {
+                                $log.error('failure loading movie', errorPayload);
+                            });
+                };
+            })
+            .factory('movieService', function ($http) {
+                return {
+                    getMovie: function (id) {
+                        return $http.get('/api/v1/movies/' + id);
+                    }
+                }
+            });
+</script>
+
+
+<script>
+    /*$http.get promise back to the controller is that the controller has to deal with the result itself.*/
+
+    /*Let's refactor the service to use a promise internally, so we can handle the result in the service and bring back the payload we want.*/
+
+    angular.module('atTheMoviesApp', [])
+    .factory('movieService', function($http, $log, $q) {
+        return {
+            getMovie: function(movie) {
+                var deferred = $q.defer();
+                $http.get('/api/v1/movies/' + movie)
+                        .success(function(data) {
+                            deferred.resolve({
+                                title: data.title,
+                                cost: data.price});
+                        }).error(function(msg, code) {
+                            deferred.reject(msg);
+                            $log.error(msg, code);
+                        });
+                return deferred.promise;
+            }
+        }
+    });
+
+    /*the reason for building a nested promise structure is obvious - you can control both the input and output of the call,
+    log errors appropriately, transform the output, and even provide status updates with deferred.notify(msg).*/
+</script>
+
+
+<script>
+    this.getMovie = function(movie) {
+        return $http.get('/api/v1/movies/' + movie)
+                .then(
+                function (response) {
+                    return {
+                        title: response.data.title,
+                        cost:  response.data.price
+                    };
+                });
+    };
+
+/*controller part*/
+    $scope.getMovie = function(movie) {
+        service.getMovie(movie)
+                .then(function(movieData) {
+                    $scope.movieData = movieData;
+                });
+    };
+</script>
+
+
+
+<script>
+
+/* the promise code will automatically sense the lack of an error function and just abort the call with the default $http error object. */
+    this.getMovie = function(movie) {
+        return $http.get('/api/v1/movies/' + movie)
+                .then(
+                function (response) {
+                    return {
+                        title: response.data.title,
+                        cost:  response.data.price
+                    };
+                },
+                function (httpError) {
+                    // translate the error
+                    throw httpError.status + " : " +
+                    httpError.data;
+                });
+    };
+</script>
+
+
+<script>
+
+
+    /*The $q.all function lets you trigger several callbacks at the same time,
+    and use a single then function to join them all together.*/
+
+    service('asyncService', function($http, $q) {
+        return {
+            loadDataFromUrls: function(urls) {
+                var deferred = $q.defer();
+                var urlCalls = [];
+                angular.forEach(urls, function(url) {
+                    urlCalls.push($http.get(url.url));
+                });
+                // they may, in fact, all be done, but this
+                // executes the callbacks in then, once they are
+                // completely finished.
+                $q.all(urlCalls)
+                        .then(
+                        function(results) {
+                            deferred.resolve(
+                                    JSON.stringify(results))
+                        },
+                        function(errors) {
+                            deferred.reject(errors);
+                        },
+                        function(updates) {
+                            deferred.update(updates);
+                        });
+                return deferred.promise;
+            }
+        };
+    });
+</script>
+
+
+</body>
+</html>

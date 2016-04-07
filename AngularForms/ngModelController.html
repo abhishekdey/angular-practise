@@ -1,0 +1,103 @@
+<!--// PSEUDO-CODE for AngularJS directive link function.
+function link( $scope ) {
+
+    function handler( data ) {
+        $scope.$apply(
+            function() {
+                // ...
+            }
+        );
+    }
+    if ( cachedData ) {
+        handler( cachedData );
+    } else {
+        getDataAsync( handler );
+    }
+}-->
+
+
+<!DOCTYPE html>
+<html lang="en" ng-app="customControl">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<style>
+    [contenteditable] {
+        border: 1px solid black;
+        background-color: white;
+        min-height: 20px;
+    }
+
+    .ng-invalid {
+        border: 1px solid red;
+    }
+</style>
+<body ng-controller="Ctrl">
+
+<textarea ng-model="usercontent1" aria-label="Dynamic textarea"></textarea>
+<textarea ng-model="usercontent1" aria-label="Dynamic textarea"></textarea>
+
+<form name="myForm">
+    <div contenteditable
+         name="myWidget" ng-model="userContent"
+         strip-br="true"
+         required>Change me!
+    </div>
+    <span ng-show="myForm.myWidget.$error.required">Required!</span>
+    <hr>
+    <textarea ng-model="userContent" aria-label="Dynamic textarea"></textarea>
+</form>
+
+<script src="../angular.js"></script>
+<script src="../angular-sanitize.js"></script>
+<script>
+
+
+    angular.module('customControl', ['ngSanitize']).
+            directive('contenteditable', ['$sce', function ($sce) {
+                return {
+                    restrict: 'A', // only activate on element attribute
+                    require: '?ngModel', // get a hold of NgModelController
+                    link: function (scope, element, attrs, ngModelCtrl) {
+                        console.log(scope);
+                        if (!ngModelCtrl) return; // do nothing if no ng-model
+
+                        // Specify how UI should be updated
+                        ngModelCtrl.$render = function () {
+                            element.html($sce.getTrustedHtml(ngModelCtrl.$viewValue || ''));
+                        };
+
+                        scope.myForm.myWidget.$isEmpty = function (value) {
+                            console.log(value);
+                        };
+
+
+                        // Listen for change events to enable binding
+                        element.on('blur keyup change', function () {
+                            scope.$evalAsync(read);
+                        });
+
+                        read(); // initialize
+
+                        // Write data to the model
+                        function read() {
+                            var html = element.html();
+                            // When we clear the content editable the browser leaves a <br> behind
+                            // If strip-br attribute is provided then we strip this out
+                            if (attrs.stripBr && html == '<br>') {
+                                html = '';
+                            }
+                            ngModelCtrl.$setViewValue(html);
+                        }
+                    }
+                };
+            }])
+            .controller('Ctrl', function ($scope) {
+                $scope.usercontent1 = 'hiiiiiiiiiiiiii';
+            });
+
+
+</script>
+</body>
+</html>

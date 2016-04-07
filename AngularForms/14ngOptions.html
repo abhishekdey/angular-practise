@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ngOptions For Array data</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="app">
+
+<!--  label group by group for value in array
+      Group by is really a short cut for adding options groups ie use the <optgroup> tags to group a set of options. .
+-->
+
+<div ng-controller="Test">
+
+    <p>selected item is : {{selectedItem}}</p>
+    <p> age of selected item is : {{selectedItem.age}} </p>
+
+    <!--   The above expression tells Angular to group each options based on the item.age. -->
+    <select ng-model="selectedItem" ng-options="item.name group by item.age for item in items">
+    </select>
+
+    <script>
+        var app = angular.module('app',[]);
+        app.controller('Test',function($scope){
+            $scope.items = [
+                {name: 'one', age: 30 },
+                { name: 'two', age: 27 },
+                { name: 'three', age: 50 },
+                { name: 'four', age: 15 },
+                { name: 'five', age: 27 },
+                { name: 'six', age: 30 }
+            ];
+
+            $scope.selectedItem = $scope.items[0];
+        });
+    </script>
+
+</div>
+</body>
+</html>

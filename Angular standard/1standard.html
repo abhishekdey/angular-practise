@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>standard 1</title>
+</head>
+<body>
+<div ng-app="myApp">
+    <div ng-controller="genderCtrl as ctrl">
+        <select ng-options="g as g for g in ctrl.genders" ng-model="ctrl.selectedGender"></select>
+    </div>
+    <div ng-controller="babyCtrl as ctrl">It's a {{ctrl.genderText}}!</div>
+    <div ng-controller="watchCtrl as ctrl">Changed {{ctrl.watches}} times.</div>
+</div>
+
+<script src="../angular.js"></script>
+<script>
+    (function (app) {
+
+        var genders = ['Male', 'Female'],
+                labels = ['boy', 'girl'];
+
+        function GenderService() {}
+
+        angular.extend(GenderService.prototype, {
+            getGenders: function () {
+                return genders.slice(0);
+            },
+            getLabelForGender: function () {
+                return this.selectedGender === genders[0] ? labels[0] : labels[1];
+            },
+            selectedGender: genders[0]
+        });
+
+        function GenderController(genderService) {
+            this.genders = genderService.getGenders();
+            this.genderService = genderService;
+        }
+
+        Object.defineProperty(GenderController.prototype,
+                'selectedGender', {
+                    enumerable: true,
+                    configurable: false,
+                    get: function () {
+                        return this.genderService.selectedGender;
+                    },
+                    set: function (val) {
+                        this.genderService.selectedGender = val;
+                    }
+                });
+
+        function BabyController(genderService) {
+            this.genderService = genderService;
+        }
+
+        Object.defineProperty(BabyController.prototype,
+                'genderText', {
+                    enumerable: true,
+                    configurable: false,
+                    get: function () {
+                        return this.genderService.getLabelForGender();
+                    }
+                });
+
+        function WatchController(genderService) {
+            this.genderService = genderService;
+            this._watches = 0;
+            this._lastSelection = genderService.selectedGender;
+        }
+
+        Object.defineProperty(
+                WatchController.prototype,
+                'watches', {
+                    enumerable: true,
+                    configurable: false,
+                    get: function () {
+                        if (this.genderService.selectedGender !== this._lastSelection) {
+                            this._watches += 1;
+                            this._lastSelection = this.genderService.selectedGender;
+                        }
+                        return this._watches;
+                    }
+                });
+
+        app.service('genderService', GenderService);
+        app.controller('genderCtrl', GenderController);
+        app.controller('babyCtrl', BabyController);
+        app.controller('watchCtrl', WatchController);
+
+    })(angular.module('myApp', []));
+</script>
+</body>
+</html>

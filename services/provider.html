@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <script src="../angular.js"></script>
+    <meta charset=utf-8 />
+    <title>Provider</title>
+</head>
+
+<body ng-controller="MainCtrl">
+public variable: {{foo.variable}}
+<br />
+private variable (through getter): {{foo.getPrivate()}}
+
+<script>
+    app = angular.module("app", []);
+    app.controller('MainCtrl', function($scope, foo) {
+        $scope.foo = foo;
+    });
+    app.provider('foo', function() {
+        var thisIsPrivate = "This is private from provider"; //this value is not read instead $get returns the value and is override by inner scope
+        return {
+            setPrivate: function(newVal) {
+                thisIsPrivate = newVal;  //override the outer scope using config
+            },
+            $get: function() {
+                function getPrivate() {
+                    return thisIsPrivate;
+                }
+                return {
+                    variable: "This is public from provider",
+                    getPrivate: getPrivate
+                };
+            }
+        };
+    });
+
+    app.config(function(fooProvider) {
+        fooProvider.setPrivate('This is private from config');
+    });
+</script>
+</body>
+</html>

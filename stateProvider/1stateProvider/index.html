@@ -1,0 +1,31 @@
+<!doctype html>
+<html ng-app="modalApp">
+  <head>
+    <title>Modals with Angular and Ui-Router</title>
+    <link rel="stylesheet" href="css/app.css" />
+    <script type="text/javascript" src="../../angular.js"></script>
+    <script type="text/javascript" src="../../angular-ui-router.js"></script>
+    <script type="text/javascript" src="../../jquery.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
+  </head>
+  <body>
+    <h3>Pusheen Hoodie</h3>
+    <p>Now you too can look like Pusheen!</p>
+    <button ui-sref="Modal.confirmAddToCart">Add to cart</button>
+    <div ui-view="modal" autoscroll="false"></div>
+  </body>
+</html>
+
+
+<!-- Since the modals are just states, you get all the other added benefits of the Angular UI Router, including:
+
+    Nested states – You can render other states within your modals
+    Callbacks – Fire off events when your modal opens or closes to inform other parts of your application
+    State params and dependency injection – Pass data to your modals with state params
+    or dependency inject data services into your state’s controllers
+    URLs – States are URI routable meaning you could have a URL that links to a modal, pretty nifty   -->
+
+
+<!--http://www.jvandemo.com/how-to-resolve-angularjs-resources-with-ui-router/-->
+
+<!--https://github.com/angular-ui/ui-router/wiki-->

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>custom directive in combination with $sce and trusted HTML</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="app">
+
+
+<section ng-controller="mainController as main">
+    <nav>
+        <ul>
+            <li ng-repeat="link in main.links"
+                compile-html="link">
+            </li>
+        </ul>
+    </nav>
+</section>
+
+<script>
+    var app = angular.module("app", []);
+
+    app.directive("compileHtml", function($parse, $sce, $compile) {
+        return {
+            restrict: "A",
+            link: function (scope, element, attributes) {
+                var expression = $sce.parseAsHtml(attributes.compileHtml);
+
+                var getResult = function () {
+                    return expression(scope);
+                };
+                scope.$watch(getResult, function (newValue) {
+                    var linker = $compile(newValue);
+                    element.append(linker(scope));
+                });
+            }
+        }
+    });
+
+    app.controller("mainController", function($sce, $log) {
+        var main = this;
+        main.links = [
+            "<a ng-click='main.go(\"google\")' href=''>Google</a>",
+            "<a ng-click='main.go(\"otc\")' href=''>OdeToCode</a>",
+            "<a ng-click='main.go(\"twitter\")' href=''>Twitter</a>"
+        ];
+
+        for (var i = 0; i < main.links.length; i++) {
+            main.links[i] = $sce.trustAsHtml(main.links[i]);
+        }
+
+        main.go = function(name){
+            $log.info("Goto: " + name);
+        };
+    });
+
+    /*
+    If these links pass through the $sanitize service, the sanitizer will remove ng-click and other attribute directives.
+    Fortunately, the controller marks the HTML as trusted so they will render with ngClick.
+    However, clicking will not work since Angular doesn’t compile the markup after it enters the DOM with ngBindHtml.
+    */
+
+</script>
+</body>
+</html>

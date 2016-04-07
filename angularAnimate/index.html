@@ -1,0 +1,30 @@
+<!-- index.html -->
+
+<!-- ----- ---------- http://plnkr.co/edit/uW4v9T?p=info  --------- ----- -->
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- CSS -->
+    <!-- load bootstrap (bootswatch version) -->
+    <link rel="stylesheet" href="../bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- JS -->
+    <!-- load angular, ngRoute, ngAnimate -->
+    <script src="angular.js"></script>
+    <script src="angular-route.js"></script>
+    <script src="../angular-animate.js"></script>
+    <script src="app.js"></script>
+
+</head>
+
+<!-- apply our angular app -->
+<body ng-app="animateApp">
+
+<!-- inject our views using ng-view -->
+<!-- each angular controller applies a different class here -->
+<div class="page {{ pageClass }}" ng-view></div>
+
+</body>
+</html>

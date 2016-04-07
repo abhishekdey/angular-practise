@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div ng-controller="MyCtrl">
+    Txt content: {{txt}}
+</div>
+
+
+<script>
+    var myApp = angular.module('myApp',[]);
+    //var url = 'https://m.myherbalife.com/bzw/es_US/version.txt';
+    var url = 'https://rawgit.com/jmp909/tests/master/version.txt';
+    var yql_api= 'https://query.yahooapis.com/v1/public/yql';
+    var yql_query = "SELECT * FROM html WHERE url='" + url + "'";
+
+    var yql_url = yql_api + "?q=" + escape(yql_query) + "&format=json&diagnostics=false&callback=JSON_CALLBACK"
+
+    console.log(yql_url);
+
+    //myApp.directive('myDirective', function() {});
+    myApp.factory('myService',
+            ['$q','$http',function($q, $http) {
+
+                var factory = {};
+                factory.getVersion = function() {
+                    var deferred = $q.defer();
+                    deferred.resolve(
+                            $http({
+                                url: yql_url,
+                                method: 'JSONP'
+                            })
+                                    .then(function(result) {
+                                        console.log("RESULT", result.data);
+                                        return result.data.query.results.body;
+                                    })
+                    );
+                    return deferred.promise;
+                };
+                return factory;
+            }]);
+
+    function MyCtrl($scope,myService) {
+        $scope.txt = myService.getVersion();
+    }
+</script>
+</body>
+</html>

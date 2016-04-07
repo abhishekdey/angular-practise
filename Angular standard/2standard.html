@@ -1,0 +1,52 @@
+<!--https://www.codementor.io/angularjs/tutorial/angularjs-shared-data-watch-broadcast-->
+
+<!DOCTYPE html>
+<html data-ng-app="testApp">
+<head>
+    <script src="../angular.js"></script>
+</head>
+<body data-ng-controller="Ctrl">
+<button ng-click="buttonclick()">updateState()</button><br><br>
+Initial state (retrieved automatically and displayed about 2
+seconds after application startup): {{initstate}}<br><br>
+Current state (changed upon button click with 0.5 s delay
+(try clicking with high frequency!)): {{curstate}}
+
+<script>
+    angular.module('testApp', [])
+
+            .factory('StateService', ['$rootScope', '$timeout',
+                function($rootScope, $timeout) {
+                    var service = {state: {data: null}};
+
+                    service.updateState = function() {
+                        $timeout(function() {
+                            service.state.data = Math.floor(Math.random()*100000);
+                            $rootScope.$broadcast('state_updated');
+                        }, 500);
+                    };
+
+                    service.updateState();
+                    return service;
+                }])
+
+            .controller('Ctrl', ['$scope', '$timeout', 'StateService',
+                function($scope, $timeout, stateService) {
+                    function useStateData() {
+                        $scope.curstate = stateService.state.data;
+                    }
+
+                    function init() {
+                        $scope.$on('state_updated', function() {useStateData()});
+                        if (stateService.state.data) {
+                            $scope.curstate = $scope.initstate = stateService.state.data;
+                        }
+                    }
+
+                    $timeout(function() {init()}, 2000);
+                    $scope.buttonclick = stateService.updateState;
+                }]);
+
+</script>
+</body>
+</html>

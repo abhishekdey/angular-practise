@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="hello">
+<head>
+    <meta charset="UTF-8">
+    <script src="../angular.js" type="text/javascript"></script>
+    <title>Inherit AND Isolate</title>
+</head>
+<body>
+
+
+
+
+<div ng-init="myProperty = 'wow, this is cool'"></div>
+Surrounding scope: {{ myProperty }}
+<div my-directive1>
+    Inside myDirective, isolate scope: {{ myProperty }}
+</div>
+
+<input type="text" ng-class="">
+<hello></hello>
+
+<div my-directive
+     my-url="http://google.com"
+     my-link-text="Click me to go to Google">
+</div>
+
+<div my-inherit-scope-directive="SomeController">
+    Inside an directive with inherited scope: {{ myProperty }}
+</div>
+
+
+</body>
+
+<script>
+    var appModule = angular.module("hello", []);
+
+    appModule.directive('myDirective1', function () {
+        return {
+            restrict: 'A',
+            scope: {}
+        };
+    });
+
+    appModule.directive('myInheritScopeDirective', function () {
+        return {
+            restrict: 'A',
+            scope: true
+        };
+    });
+
+    appModule.directive("hello", function () {
+        return {
+            restrict: 'EC',
+            require: '?ngModel',
+            template: "<div>" +
+            "<button value='sjj'>Clickme</button>" +
+            "<input ng-model='hdhdh' type='text'>" +
+            "</div>",
+            link: function (scope, element, attribute, ngModelController) {
+                element.on('click', function () {
+                    alert("slsl")
+                });
+            }
+        }
+    });
+
+    appModule.directive('myDirective', function () {
+        return {
+            restrict: 'A',
+            replace: true,
+            template: '<a href="{{myUrl}}">{{myLinkText}}</a>',
+            scope: {
+                myUrl: '@'
+            }
+        }
+    })
+</script>
+</html>

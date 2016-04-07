@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>transclude</title>
+</head>
+
+<body ng-app="scopes">
+
+<div ng-controller="Ctrl" class="ng-scope">
+    <my-dir><h3>Parent will not be override</h3></my-dir>
+</div>
+
+<script src="../../angular.js"></script>
+<script>
+    /*
+     * Created by Abhishek Dey on 9/8/15.
+     */
+    /*http://stackoverflow.com/questions/22497706/angular-directive-replace-true*/
+    /*to perserve the element's original content/children you would have to translude it.*/
+    angular.module('scopes', [])
+            .controller('Ctrl', function($scope) {
+                $scope.title = "child will not override and will be appended with parent";
+
+            })
+            .directive('myDir', function() {
+                return {
+                    restrict: 'E',
+                    replace: false,
+                    transclude: true,
+                    template: '<div>{{title}}<div ng-transclude></div></div>'
+                };
+            });
+</script>
+
+</body>
+</html>

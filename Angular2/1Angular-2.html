@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Angular 2 QuickStart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- 1. Load libraries -->
+    <!-- IE required polyfill -->
+    <script src="node_modules/es6-shim/es6-shim.min.js"></script>
+    <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+    <script src="node_modules/rxjs/bundles/Rx.umd.js"></script>
+    <script src="node_modules/angular2/bundles/angular2-all.umd.js"></script>
+
+    <!-- 2. Load our 'modules' -->
+    <!--We're creating a visual component named AppComponent by chaining the Component and Class methods
+    that belong to the global Angular core namespace, ng.core-->
+
+
+    <!--ng.core.Component() tells Angular that this class definition object is an Angular component.
+    The configuration object passed to the ng.core.Component() method has two fields, a selector and a template.-->
+    <script>
+        (function(app) {
+            app.AppComponent =
+                    ng.core.Component({
+                        selector: 'my-app',
+                        template: '<h1>My First Angular 2 App</h1>'
+                    })
+                            .Class({
+                                constructor: function() {}
+                            });
+        })(window.app || (window.app = {}));
+     /*We pass the global app namespace object into the IIFE, taking care to initialize with an empty object if it doesn't yet exist.*/
+     /*So within each file we surround the code in an IIFE ("Immediately Invoked Function Expression").*/
+    </script>
+
+    <!-- When another module needs to refer to AppComponent, it gets it from the app.AppComponent like
+      ng.platform.browser.bootstrap(app.AppComponent); -->
+    <script>
+        (function(app) {
+            document.addEventListener('DOMContentLoaded', function() {
+                ng.platform.browser.bootstrap(app.AppComponent);
+            });
+        })(window.app || (window.app = {}));
+    </script>
+
+</head>
+
+<!-- 3. Display the application -->
+<body>
+<my-app>Loading...</my-app>
+</body>
+
+</html>

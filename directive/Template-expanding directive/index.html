@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example - example-example11-production</title>
+    <script src="../../angular.js"></script>
+    <script>
+        'use strict';
+        angular.module('docsSimpleDirective', [])
+                .controller('Controller', ['$scope', function($scope) {
+                    $scope.customer = {
+                        name: 'Naomi',
+                        address: '1600 Amphitheatre'
+                    };
+                }])
+                .directive('myCustomer', function() {
+                    return {
+                        template: 'Name: {{customer.name}} Address: {{customer.address}}'
+                    };
+
+                    /*
+                     Best Practice: Unless your template is very small, it's typically better to break it apart into its
+                     own HTML file and load it with the templateUrl option.
+
+                     return {
+                     templateUrl: 'my-customer.html'
+                     };
+
+                     in my-customer.html
+                     Name: {{customer.name}} Address: {{customer.address}}
+                     */
+                });
+
+    </script>
+</head>
+<body ng-app="docsSimpleDirective">
+<div ng-controller="Controller">
+    <div my-customer></div>
+</div>
+</body>
+</html>

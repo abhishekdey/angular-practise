@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body ng-app="docsTransclusionExample">
+
+
+
+<div ng-controller="Controller">
+    {{message}}
+    <my-dialog ng-hide="dialogIsHidden" on-close="hideDialog(message)">
+        Check out the contents, {{name}}!
+    </my-dialog>
+</div>
+
+
+
+<script src="../angular.js"></script>
+<script>
+    /**
+     * Created by Abhishek Dey on 8/8/15.
+     */
+
+
+
+    angular.module('docsIsoFnBindExample', [])
+            .controller('Controller', ['$scope', '$timeout', function($scope, $timeout) {
+                $scope.name = 'Tobias';
+                $scope.message = '';
+                $scope.hideDialog = function (message) {
+                    $scope.message = message;
+                    $scope.dialogIsHidden = true;
+                    $timeout(function () {
+                        $scope.message = '';
+                        $scope.dialogIsHidden = false;
+                    }, 2000);
+                };
+            }])
+            .directive('myDialog', function() {
+                return {
+                    restrict: 'E',
+                    transclude: true,
+                    scope: {
+                        'close': '&onClose'
+                    },
+                    templateUrl: 'my-dialog-close.html'
+                };
+            });
+
+
+
+</script>
+
+</body>
+</html>

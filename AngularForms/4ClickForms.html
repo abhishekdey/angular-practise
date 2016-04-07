@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Submit using ngClick</title>
+    <script src="../angular.js"></script>
+</head>
+
+<body ng-app="myapp">
+
+
+                <!-- unless the element has action, data-action, or x-action attributes specified.-->
+                <!--Here is a form that uses the ng-click attribute on a button element: -->
+                <!----- The ngClick directive allows you to specify custom behavior when an element is clicked ----->
+
+<div ng-controller="MyController" >
+    <form>
+        <input type="text" id="name" ng-model="myForm.name" ng-minlength="5" ng-maxlength="12"> Name <br/>
+
+        <select ng-model="myForm.car">
+            <option value="nissan">Nissan</option>
+            <option value="toyota">Toyota</option>
+            <option value="fiat">Fiat</option>
+        </select>
+
+        <button ng-click="myForm.submitTheForm()">Submit Form</button>
+    </form>
+
+    <div>
+        {{myForm.name}}
+    </div>
+    <div>
+        {{myForm.car}}
+    </div>
+</div>
+
+<script>
+    angular.module("myapp", [])
+            .controller("MyController", function($scope, $http) {
+                $scope.myForm = {};
+                $scope.myForm.name = "Jakob Jenkov";
+                $scope.myForm.car  = "nissan";
+
+                $scope.myForm.submitTheForm = function(item, event) {
+                    console.log("--> Submitting form");
+                    var dataObject = {
+                        name : $scope.myForm.name
+                        ,car  : $scope.myForm.car
+                    };
+
+                    var responsePromise = $http.post("/angularjs-examples/json-test-data.jsp", dataObject, {});
+                    responsePromise.success(function(dataFromServer, status, headers, config) {
+                        console.log(dataFromServer.title);
+                    });
+                    responsePromise.error(function(data, status, headers, config) {
+                        alert("Submitting form failed!");
+                    });
+                }
+
+            });
+</script>
+<!--the two mechanisms are very similar. They both call a submit function on the $scope object. -->
+</body>
+</html>

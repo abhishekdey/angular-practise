@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Directive</title>
+</head>
+<body ng-controller="myController">
+<fm-rating like='likeFunction()' ng-model="filter.price" symbol="$" message="{{message}}"></fm-rating>
+</body>
+
+
+<script src="../angular.js"></script>
+<script>
+    var myApp = angular.module('myApp', []);
+
+    myApp.controller('myController', function ($scope) {
+        $scope.likeFunction = function () {
+            alert('like');
+        };
+        $scope.message = 'My directive';
+    });
+
+    myApp.directive('fmRating', function () {
+        return {
+            restrict: 'E',
+            require: 'ngModel',
+            link: function () {
+            },
+            scope: {
+                like: '&',
+                message: '@'
+            },
+            template: '<input type="button" ng-click="like()" value="Like"/>' +
+            ' <div class="alert">{{message}}</div>'
+        };
+    });
+
+</script>
+</html>

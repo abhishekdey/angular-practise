@@ -1,0 +1,20 @@
+https://gist.github.com/joyrexus/524c7e811e4abf9afe56
+
+http://www.diogogmt.com/temp-slug-108/
+http://www.angulartutorial.net/2015/03/file-upload-and-sending-data-to-backend.html
+
+ The application/x-www-form-urlencoded and multipart/form-data formats are only applicable to the HTTP POST method (and not GET, PUT or DELETE).
+Url-encoded  curl -d "brand=nike" -d "color=red" -d "size=11" $URL
+application/x-www-form-urlencoded: The default value if the attribute is not specified.
+
+
+    Char => +
+    Base10 => 43
+    Base16 => 2B
+    Url Encoded => %2D
+The default one is the x-www-form-urlencoded also known as Percent encoding
+
+
+
+Multipart  curl --form "image=@nikes.png" --form "brand=nike" --form "color=red" --form "size=11" $URL
+multipart/form-data: Use this value if you are using an <input> element with the type attribute set to “file”.

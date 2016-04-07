@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Filter</title>
+    <script src="../angular.js" type="text/javascript"></script>
+    <script>
+
+        var myApp = angular.module("myApp",[]);
+        myApp.controller("MyController",function($scope){
+            $scope.nameObj = ['Ari', 'Lerner', 'likes', 'to', 'Eat', 'Pizza'];
+            $scope.dishes = [{
+                        'name': 'Ari',
+                        'City': 'San Francisco',
+                        'favorite food': 'Pizza'
+                    }, {
+                        'name': 'Nate',
+                        'City': 'San Francisco',
+                        'favorite food': 'indian food'
+                    }]
+            $scope.isCapitalized =
+                    function(str) { return str[0] == str[0].toUpperCase(); }
+        });
+    </script>
+</head>
+
+<body ng-controller="MyController">
+
+    <p>filter based on character E</p>
+    <ul  ng-repeat="name in nameObj | filter :'e'">
+        <li>{{name}}</li>
+    </ul>
+
+    <p>Capitalized filter</p>
+    <ul  ng-repeat="name in nameObj | filter :isCapitalized">
+        <li>{{name}}</li>
+    </ul>
+
+    <p>order by name</p>
+    <ul  ng-repeat="name in nameObj | orderBy: 'name'">
+        <li>{{name}}</li>
+    </ul>
+
+
+    <select ng-model="selectedItem" ng-options="dish.name for dish in dishes | filter:{'favorite food': 'indian food'}">
+    </select>
+
+
+
+</body>
+</html>

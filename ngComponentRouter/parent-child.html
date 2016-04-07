@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div ng-controller="Parent as parent">
+
+    <div ng-if="parent.showMessage">
+        Some simple message.
+    </div>
+
+    <div child-one parent="parent"></div>
+
+</div>
+
+<script src="../angular.js"></script>
+<script>
+    var app = angular.module('app', []);
+
+    app.controller('Parent', function () {
+        var self = this;
+        self.showMessage = true;
+    });
+
+    app.directive('childOne', function () {
+        return {
+            controllerAs: 'childOne',
+            controller: function ($scope, $attrs) {
+                var parent = $scope.$eval($attrs.parent);
+
+                var self = this;
+                self.foo = 'bar';
+                // Some simple logic.
+                if (self.foo === 'bar') {
+                    parent.showMessage = false;
+                }
+            }
+        };
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!--http://gurustop.net/blog/2015/12/16/angular2-beta-javascript-component-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular Demo</title>
+</head>
+<body>
+
+<company-app>
+    Loading ...
+</company-app>
+
+
+<!-- 1. Load libraries -->
+<!-- IE required polyfill -->
+<script src="node_modules/es6-shim/es6-shim.min.js"></script>
+<script src="node_modules/rxjs/bundles/Rx.umd.js"></script>
+<script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+<script src="node_modules/angular2/bundles/angular2-all.umd.js"></script>
+<!--<script src="../angular2-all.umd.dev.js"></script>-->
+<!--
+    Putting Almond.js after the external libraries since I am not managing their
+    loading through Almond. If I move this library up, AngularJS attempts to use
+    define() (I think) which I am not configured for in this demo.
+    --
+    NOTE: AlmondJS is just a simplified version of RequireJS.
+-->
+<script type="text/javascript" src="../almond.js"></script>
+
+<script>
+    (function () {
+
+        var HelloWorldComponent = function () {
+        };
+
+        /*which maps to <hello-world> in our HTML*/
+     /*ng.core.Component. This is due to Angular splitting code into different parts like “core”, “common”, “compiler”, “platform”, etc.*/
+        /*new keyword*/
+        HelloWorldComponent.annotations = [
+            new ng.core.Component({
+                selector: 'hello-world',
+                template: '<h1>Hello Angular2!</h1>'
+            })
+        ];
+
+        /*no new keyword again*/
+        /* [] means JS => DOM, () means DOM => JS. [()] is used for 2-way data binding.*/
+        var HelloFlentApi = ng.core.Component({
+            selector: 'hello-fluent',
+            template: '<h1>Hello {{name}}!</h1>' + '<input [(ngModel)]="name">',
+        }).Class({
+            constructor: function () {
+                this.name = "Fluent API";
+            }
+        });
+
+        /*add a constructor even if it’s just an empty function, */
+        /*Note that for us to include other custom components in our template,
+        we had to add them to another property, called “directives”.*/
+        var AppComponent = ng.core.Component({
+            selector: 'company-app',
+            template: '<hello-world></hello-world>' + '<hello-fluent></hello-fluent>',
+            directives: [HelloWorldComponent, HelloFlentApi]
+        }).Class({
+            constructor: function () {
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            ng.platform.browser.bootstrap(AppComponent);
+        });
+
+    }(window.app || (window.app = {})));
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!--http://stackoverflow.com/questions/11252780/whats-the-correct-way-to-communicate-between-controllers-in-angularjs-->
+
+
+<!DOCTYPE html>
+<html lang="en" ng-app="myModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Communication between controller</title>
+    <script src="../angular.js"></script>
+</head>
+<body>
+<div ng-controller="ControllerZero">
+    <input ng-model="message">
+    <button ng-click="handleClick(message);">LOG</button>
+</div>
+
+<div ng-controller="ControllerOne">
+    <input ng-model="message">
+</div>
+
+<div ng-controller="ControllerTwo">
+    <input ng-model="message">
+</div>
+
+
+<script>
+    var myModule = angular.module('myModule', []);
+    myModule.factory('mySharedService', function ($rootScope) {
+        var sharedService = {};
+
+        sharedService.message = '';
+
+        sharedService.prepForBroadcast = function (msg) {
+            this.message = msg;
+            this.broadcastItem();
+        };
+
+        sharedService.broadcastItem = function () {
+            $rootScope.$emit('handleBroadcast');
+        };
+
+        return sharedService;
+    });
+
+    myModule.controller('ControllerZero', function ($scope, mySharedService,$rootScope) {
+        $scope.handleClick = function (msg) {
+            mySharedService.prepForBroadcast(msg);
+        };
+
+        var unbind = $rootScope.$on('handleBroadcast', function () {
+            $scope.message = mySharedService.message;
+        });
+
+        $scope.$on('$destroy', unbind);
+    });
+
+    myModule.controller('ControllerOne', function ($scope, mySharedService,$rootScope) {
+        var unbind = $rootScope.$on('handleBroadcast', function () {
+            $scope.message = 'ONE: ' + mySharedService.message;
+        });
+
+        $scope.$on('$destroy', unbind);
+    });
+
+    myModule.controller('ControllerTwo', function ($scope, mySharedService,$rootScope) {
+        var unbind = $rootScope.$on('handleBroadcast', function () {
+            $scope.message = 'TWO: ' + mySharedService.message;
+        });
+
+        $scope.$on('$destroy', unbind);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<!--http://chariotsolutions.com/blog/post/angularjs-corner-using-promises-q-handle-asynchronous-calls/-->
+<head>
+  <script src="../../jquery.js"></script>
+  <script src="../../angular.js"></script>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+</head>
+
+<body ng-app='myApp'
+      ng-controller='PromisesPromisesCtrl'>
+  <h1>HTML Fetcher</h1>
+
+  <button ng-click='addUrl()'>Add...</button>
+  <button ng-click='executeCalls(urls)'>Go Get Em</button>
+  <hr/>
+  <div ng-repeat='url in urls'>
+    <input type='text' ng-model='url.url'> {{ url.url }} <br/>
+  </div>
+  <hr/>
+
+  <h2>Logs</h2>
+  <p ng-repeat='record in log track by $index'>
+     <span ng-bind='record'></span>
+  </p>
+</body>
+
+</html>

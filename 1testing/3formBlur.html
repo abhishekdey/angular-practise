@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="signupForm">
+<head>
+    <meta charset="UTF-8">
+    <script src="../angular.js"></script>
+    <title>Show Validations Only after Blur</title>
+</head>
+<body>
+
+<script>
+    var app = angular.module("signupForm",[]);
+
+    app.directive('ngFocus', [function() {
+        var FOCUS_CLASS = "ng-focused";
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ctrl) {
+                ctrl.$focused = false;
+                element.bind('focus', function (evt) {
+                    element.addClass(FOCUS_CLASS);
+                    scope.$apply(function () {
+                        ctrl.$focused = true;
+                    });
+                }).bind('blur', function (evt) {
+                    element.removeClass(FOCUS_CLASS);
+                    scope.$apply(function () {
+                        ctrl.$focused = false;
+                    });
+                });
+            }
+        }
+    }]);
+</script>
+<form name="signup_form">
+
+    <fieldset>
+        <legend>Signup</legend>
+        <div class="row">
+            <div class="large-12 columns">
+                <label>Your email</label>
+                <input  ng-class="{
+                        error: signup_form.email.$dirty &&
+                        signup_form.email.$invalid}"
+                        type="email"
+                       placeholder="Email"
+                       name="email"
+                       ng-model="signup.email"
+                       ng-minlength=3
+                       ng-maxlength=20
+                       required
+                       ng-focus>
+                <div class="error"
+                     ng-show="signup_form.email.$dirty && signup_form.email.$invalid
+                        && !signup_form.email.$focused">
+                    <small class="error"
+                           ng-show="signup_form.email.$error.required">
+                        Your email is required.
+                    </small>
+                    <small class="error"
+                           ng-show="signup_form.email.$error.minlength">
+                        Your email is required to be at least 3 characters
+                    </small>
+                    <small class="error"
+                           ng-show="signup_form.email.$error.email">
+                        That is not a valid email. Please input a valid email.
+                    </small>
+                    <small class="error"
+                           ng-show="signup_form.email.$error.maxlength">
+                        Your email cannot be longer than 20 characters
+                    </small>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+</body>
+</html>

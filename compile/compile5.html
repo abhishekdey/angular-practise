@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>COMPILE VS LINK</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="plunker">
+
+
+<level-one>
+    <level-two>
+        <level-three>
+            Hello {{name}}
+        </level-three>
+    </level-two>
+</level-one>
+
+
+<script>
+    var app = angular.module('plunker', []);
+
+    function createDirective(name){
+        return function(){
+            return {
+                restrict: 'E',
+                compile: function(tElem, tAttrs){
+                    console.log(name + ': compile => ' + tElem.html());
+                    return {
+                        pre: function(scope, iElem, iAttrs){
+                            console.log(name + ': pre link => ' + iElem.html());
+                        },
+                        post: function(scope, iElem, iAttrs){
+                            console.log(name + ': post link => ' + iElem.html());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /*Once the compile function of the levelOne directive has run, AngularJS recursively traverses deeper into the DOM
+    and repeats the same compilation step for the <level-two> and <level-three> elements.*/
+
+    app.directive('levelOne', createDirective('levelOne'));
+    app.directive('levelTwo', createDirective('levelTwo'));
+    app.directive('levelThree', createDirective('levelThree'));
+</script>
+</body>
+</html>

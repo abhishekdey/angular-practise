@@ -1,0 +1,236 @@
+<!doctype html>
+<html ng-app='myApp'>
+<head>
+    <!--
+  Uncomment if u want to change library importing.
+  I'm using a github project as cdn delivery to get rid of annoning full page/details inline script removal by codepen
+
+  -->
+    <!--
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.1/bootstrap.min.js'></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.5/angular.min.js"></script>
+  -->
+</head>
+<body>
+<div class="container">
+<style>
+
+    @import url('http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css');
+
+    header {
+        margin-bottom: 10px;}
+
+    header h2 { display:inline; }
+
+
+    .todos li {
+     list-style: none; }
+
+
+    .todo-done {
+        text-decoration: line-through;
+    }
+
+</style>
+    <script>
+        angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers']).
+                config(['$routeProvider', function($routeProvider) {
+                    $routeProvider.when('/view1', {templateUrl: 'temp1.html', controller: 'MyCtrl1'});
+                    $routeProvider.when('/view2', {templateUrl: 'temp2.html', controller: 'MyCtrl2'});
+                    $routeProvider.when('/main', {templateUrl: 'main.html', controller: 'MainCtrl'});
+                    $routeProvider.otherwise({redirectTo: '/view2'});
+                }]);
+
+        angular.module('myApp.controllers', [])
+                .controller('MainCtrl', ['$scope',function($scope) {
+
+                }])
+                .controller('MyCtrl1', ['$scope',function($scope) {
+                    $scope.todos = [
+                        { desc:'Wash Dishes',done:false},
+                        { desc:'Call John',done:false},
+                        { desc:'Pay Bills',done:false}
+                    ];
+                    $scope.toggleState = function(index){
+                        var todo =  $scope.todos[index];
+                        todo.done = !todo.done;
+                    };
+                    $scope.isDone = function(index) {
+                        return $scope.todos[index].done ? 'todo-done' : '';
+                    }
+                    $scope.removeTodo = function(index) {
+                        $scope.todos.splice(index,1);
+                    }
+                    $scope.addTodo = function(){
+                        todo =[{desc:$scope.newTodo,done:false}]
+                        $scope.todos = todo.concat($scope.todos);
+                        $scope.newTodo = '';
+                    }
+                }])
+                .controller('MyCtrl2', ['$scope',function($scope) {
+                    $scope.contacts = [
+                        {
+                            name:'Jonh Doe',
+                            phone:'555-12345',
+                            email:'johndoe@myfriend.name',
+                            birthday: new Date(12345678000)
+                        },
+                        {
+                            name:'Jane Doe',
+                            phone:'555-54321',
+                            email:'janedoe@myfriend.name',
+                            birthday: new Date(1234567800000)
+                        },
+                        {
+                            name:'Luke Doe',
+                            phone:'777-12345',
+                            email:'lukedoe@myfriend.name',
+                            birthday: new Date(12345678)
+                        }
+                    ];
+                }]);
+
+        angular.module('myApp.directives', []).
+                directive('appVersion', ['version', function(version) {
+                    return function(scope, elm, attrs) {
+                        elm.text(version);
+                    };
+                }])
+                .directive('onEnter',[function(){
+                    return function(scope,elm,attrs) {
+   // thanks to http://jsfiddle.net/Ba9vY/ - https://groups.google.com/forum/#!msg/angular/tv4Nl1HouOw/i0MMmfkMrbUJ
+                        elm.on('keydown keypress',function(){
+                            if(event.which === 13) {
+                                scope.$apply(function(){
+                                    scope.$eval(attrs.onEnter);
+                                });
+                                event.preventDefault();
+                            }
+                        });
+
+                    };
+                }]);
+        ;
+
+        angular.module('myApp.filters', []).
+                filter('interpolate', ['version', function(version) {
+                    return function(text) {
+                        return String(text).replace(/\%VERSION\%/mg, version);
+                    }
+                }]);
+
+        angular.module('myApp.services', []).
+                value('version', '0.1');
+    </script>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="#/">Angular Test <span app-version>VERSION</span></a><ul class="nav">
+
+            <li>
+                <a href="#/view1">First Controller</a>
+            </li>
+            <li>
+                <a href="#/view2">Second Controller</a>
+            </li>
+        </ul>
+        </div>
+    </div>
+
+    <div ng-view>
+        <div class="alert alert-block">
+            Application is loading ... Please wait ... (You have to open codepen in editor to try this)
+        </div>
+    </div>
+
+</div>
+</div>
+<script type="text/ng-template" id="temp1.html">
+    <div class="view">
+        <header>
+            <h2>First View</h2>
+        </header>
+        <section>
+            <div class="control-group">
+
+                <div class="controls">
+                    <div class="input-prepend">
+            <span class="add-on">
+              Add
+            </span>
+                        <input class="span2" id="inputIcon" type="text" ng-model="newTodo" on-enter="addTodo()">
+                    </div>
+                </div>
+                <span> Click Enter to add.</span>
+            </div>
+            <ul class="todos">
+                <li ng-repeat="todo in todos">
+                    <i class="icon-play-circle" ng-hide="todo.done" />
+                    <i class="icon-ok" ng-show="todo.done" /><span ng-click="toggleState($index)" ng-class="isDone($index)">{{todo.desc}}</span>
+                    <i class="icon-remove" ng-click="removeTodo($index)" />
+                </li>
+
+            </ul>
+            <span> Click on the task you've done or simply click <i class="icon-remove" /> to remove.</span>
+        </section>
+        <footer>
+            <a href="#/">Go Back </a>
+        </footer>
+    </div>
+</script>
+<script type="text/ng-template" id="temp2.html">
+    <div class="view">
+        <header>
+            <h2>Second View</h2>
+            <div class="navbar-search pull-right">
+                <input type="text" class="span2 search-query" ng-model="searchText" placeholder="Search">
+            </div>
+        </header>
+        <section>
+            <table class="table table-bordered">
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>email</th>
+                </tr>
+                <tr ng-repeat="contact in contacts | orderBy: '-birthday' | filter:{name:searchText || '' } ">
+                    <td>{{contact.name}}</td>
+                    <td>{{contact.phone}}</td>
+                    <td>{{contact.email}}</td>
+                    <td>{{contact.birthday}}</td>
+                </tr>
+            </table>
+        </section>
+        <footer>
+            <a href="#/">Go Back </a>
+        </footer>
+    </div>
+</script>
+<script type="text/ng-template" id="main.html">
+    <div class="view">
+        <header>
+            <h2>AngularJs-Template Codepen</h2>
+        </header>
+        <section>
+            <article>
+                <p>The aim of this CodePen is to have a base for angularJs experiment on Codepen. I want to test some angularjs knowledge and i just wanted to fork out the codepen as bootstrap flow.  </p>
+                <p>So if u need a base for a quick test or on the contrary wanna start some angularjs experiment. Just fork and start.</p>
+                <p>Tell Me what you think, any suggestion is appreciated.</p>
+                <p>Each Controller has his own template.<br />
+                    In this example there are 2 type of controller:</p>
+                <ul><li>The main controller that aim to inform the user about the experiment throught a simple html view.</li>
+                    <li>Than a couple of example controller (<a href="#/view1">First Controller</a> and <a href="#/view2">Second Controller</a>, yeah i know, sue me) that show the code flow of the experiment, and his rendering can be controller by navigation bar.</li>
+                </ul>
+                <p> Using Twitter bootstrap we can take advantage of styling and rendering the views. Just a matter of class applying.</p>
+                <p> Using jquery on top of angular we get rid of jQlite plugged in angular and use all the firepwoer we need.</p>
+                <p>Any suggestion is appreciated</p>
+            </article>
+        </section>
+        <footer>
+
+        </footer>
+
+    </div>
+</script>
+</body>
+</html>

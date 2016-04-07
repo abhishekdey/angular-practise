@@ -1,0 +1,18 @@
+If you look at the Scope.$on() implementation, you will see that when an event binding is registered for a given event type,
+ AngularJS increments a counter for that event type on the current scope. AngularJS then travels up the
+ scope hierarchy and increments the same counter on each parent scope.
+ This means that the existence of a deeper event binding can be determined using the counter value at a shallower point
+  in the scope tree.
+
+On the flip side, the Scope.$broadcast() method then looks at the relevant counters and only walks do
+ AngularJS only traverses parts of the scope tree that actually have matching event bindings and ignores subtrees that
+ do not have matching event bindings.
+
+Event-based communication is a very powerful part of a decoupled JavaScript application.
+And, it's very comforting to know that events can be broadcast in an AngularJS application without incurring
+
+unnecessarily exhaustive scope searches. And, of course, it should also be mentioned that Scope.$broadcast()
+doesn't trigger an $apply(); so, there is also no additional dirty-checking overhead.
+
+
+http://www.bennadel.com/blog/2724-scope-broadcast-is-surprisingly-efficient-in-angularjs.htm

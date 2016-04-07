@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"  ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>Transclusion and Scopes</title>
+    <script src="../../angular.js" type="text/javascript"></script>
+</head>
+
+<!--http://www.angular-tips.com/blog/2014/03/transclusion-and-scopes/-->
+<script>
+    var app = angular.module("app",[]);
+    app.controller('MainCtrl', function($scope) {
+        $scope.person = {
+            name: 'John Doe',
+            profession: 'Fake name'
+        };
+
+        $scope.header = 'Person';
+    });
+
+
+
+    /*fifth parameter says something about transclusion.
+    With that function, we have control of both the scope and the HTML of the transclusion.*/
+
+
+    app.directive('person', function() {
+        return {
+            restrict: 'EA',
+            scope: {
+                header: '='
+            },
+            transclude:true,
+            link: function(scope, element, attrs, ctrl, transclude) {
+                scope.person = {
+                    name: 'Directive Joe',
+                    profession: 'Scope guy'
+                };
+
+                scope.header = 'Directive\'s header';
+                transclude(scope, function(clone, scope) {
+                    element.append(clone);
+                });
+            }
+        };
+    });
+
+
+</script>
+<body ng-controller="MainCtrl">
+<person header="header">
+    <h2>{{header}}</h2>
+    <p>Hello, I am {{person.name}} and,</p>
+    <p>I am a {{person.profession}}</p>
+</person>
+</body>
+
+</html>

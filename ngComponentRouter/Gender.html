@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="GenderSelection">
+<head>
+    <meta charset="UTF-8">
+    <title>Gender selection</title>
+</head>
+<body>
+
+
+<div ng-controller="GenderSelectionController">
+    <form name="GenderForm">
+        <label>
+            <input type="radio" ng-model="gender.type" value="male">
+            Male
+        </label><br/>
+        <label>
+            <input type="radio" ng-model="gender.type" value="female">
+            Female
+        </label><br/>
+        <hr/>
+
+        <div class="animate-switch-container" ng-switch on="gender.type">
+
+            <div ng-switch-when="male" primary-layout>
+                <!-- Content provided by component directive. -->
+            </div>
+            <div ng-switch-when="female" secondary-layout>
+                <!-- Content provided by component directive. -->
+            </div>
+        </div>
+
+        <button ng-click="gender.save()">Save</button>
+    </form>
+</div>
+
+<script src="../angular.js"></script>
+<script src="gender.js"></script>
+<script src="primary-layout.directive.js"></script>
+<script src="secondary-layout.directive.js"></script>
+</body>
+</html>

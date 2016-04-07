@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Render HTML with ngBindHtml</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="app">
+
+
+<section ng-controller="mainController as main">
+
+
+    <!--Error: [$sce:unsafe] Attempting to use an unsafe value in a safe context.-->
+    <nav>
+        <ul>
+            <li ng-repeat="link in main.links"
+                ng-bind-html="link">
+            </li>
+        </ul>
+    </nav>
+
+</section>
+
+<script>
+
+    var app = angular.module("app",[]);
+    app.controller("mainController", function() {
+        var main = this;
+
+        main.links = [
+            "<a href='http://google.com'>Google</a>",
+            "<a href='http://odetocode.com'>OdeToCode</a>",
+            "<a href='http://twitter.com'>Twitter</a>",
+        ];
+    });
+</script>
+</body>
+</html>

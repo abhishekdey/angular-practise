@@ -1,0 +1,64 @@
+<!--https://www.codementor.io/angularjs/tutorial/angularjs-shared-data-watch-broadcast-->
+
+
+<!DOCTYPE html>
+<html data-ng-app="testApp">
+<head>
+    <script src="../angular.js"></script>
+</head>
+<body data-ng-controller="Ctrl">
+Please watch the JavaScript console.<br>
+<button ng-click="buttonclick(false)">updateState(constant)</button>
+<button ng-click="buttonclick(true)">updateState(random)</button>
+<script >
+    var app = angular.module('testApp', []);
+    var UPDATE_STATE_DELAY = 1000;
+
+    app.factory('StateService', ['$rootScope', '$timeout',
+        function($rootScope, $timeout) {
+
+            console.log('StateService: startup.');
+            var service = {state: {data: null}};
+
+            service.updateState = function(rnd) {
+                console.log("StateService: updateState(). Retrieving data...");
+                $timeout(function() {
+                    console.log("StateService: ...got data, assign it to state.data.");
+                    if (rnd)
+                        service.state.data = Math.floor(Math.random()*1000);
+                    else
+                        service.state.data = "constantpayload";
+                }, UPDATE_STATE_DELAY);
+            };
+
+            // Update state automatically once upon service (app) startup.
+            service.updateState();
+
+            return service;
+        }]);
+
+    function init() {
+        console.log('Ctrl: init. Install watcher for stateService.state.data.');
+        $scope.$watch(
+                function() {return stateService.state.data;},
+                function(newValue, oldValue) {
+                    console.log("Ctrl: stateService.state.data watcher: triggered.");
+                    if (newValue !== oldValue) {
+                        console.log("Ctrl: stateService.state.data watcher: data changed, use data.");
+                        useStateData();
+                    }
+                    else
+                        console.log("Ctrl: stateService.state.data watcher: data did not change: " + oldValue);
+                }
+        );
+    }
+
+    init();
+
+    $scope.buttonclick = function(random) {
+        console.log("Ctrl: Call stateService.updateState() due to button click.");
+        stateService.updateState(random);
+    };
+</script>
+</body>
+</html>

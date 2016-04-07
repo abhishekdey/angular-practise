@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <script src="../angular.js"></script>
+    <meta charset=utf-8 />
+    <title>Factory</title>
+</head>
+<body ng-controller="MainCtrl">
+public variable: {{model.foo.variable}}
+<br />
+private variable (through getter): {{model.foo.getPrivate()}}
+
+<script>
+    app = angular.module("app", []);
+
+    app.controller('MainCtrl', function($scope, foo) {
+        $scope.model = {foo : foo};
+    });
+
+    app.factory('foo', function() {
+        var thisIsPrivate = "This is private";
+        function getPrivate() {
+            return thisIsPrivate;
+        }
+        return {
+            variable: "This is public",
+            getPrivate: getPrivate
+        };
+    });
+</script>
+</body>
+</html>

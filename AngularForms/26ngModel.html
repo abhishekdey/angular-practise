@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myModule">
+<head>
+    <meta charset="UTF-8">
+    <script src="../angular.js"></script>
+    <title>ngModel</title>
+</head>
+<body>
+<time-duration ng-model="email_notify_pref" />
+
+<script>
+
+    function TimeDurationDirective() {
+        var tpl = "<div> \
+        <input type='text' ng-model='num' size='20' /> \
+        <select ng-model='unit'> \
+            <option value='seconds'>Seconds</option> \
+            <option value='minutes'>Minutes</option> \
+            <option value='hours'>Hours</option> \
+            <option value='days'>Days</option> \
+        </select> \
+    </div>";
+
+        return {
+            restrict: 'E',
+            template: tpl,
+            require: 'ngModel',
+            replace: true,
+            link: function(scope, iElement, iAttrs, ngModelCtrl) {
+                // Units of time
+                var multiplierMap = {seconds: 1, minutes: 60, hours: 3600, days: 86400};
+                var multiplierTypes = ['seconds', 'minutes', 'hours', 'days'];
+
+                //called when model changes
+                ngModelCtrl.$formatters.push(function(modelValue) {
+                    var unit = 'minutes', num = 0, i, unitName;
+
+                    modelValue = parseInt(modelValue || 86401);
+
+                    // Figure out the largest unit of time the model value
+                    // fits into. For example, 3600 is 1 hour, but 1800 is 30 minutes.
+                    for (i = multiplierTypes.length-1; i >= 0; i--) {
+                        unitName = multiplierTypes[i];
+                        if (modelValue % multiplierMap[unitName] === 0) {
+                            unit = unitName;
+                            break;
+                        }
+                    }
+
+                    if (modelValue) {
+                        num = modelValue / multiplierMap[unit]
+                    }
+
+                    return {
+                        unit: unit,
+                        num:  num
+                    };
+                });
+
+                ngModelCtrl.$render = function() {
+                    console.log("$render");
+                    if (typeof  $viewValue =="undefined"){
+                        $viewValue = { unit: 'hours', num: 1 };
+                    }
+
+                    scope.unit = ngModelCtrl.$viewValue.unit;
+                    scope.num  = ngModelCtrl.$viewValue.num;
+                };
+
+                scope.$watch('unit + num', function() {
+                    console.log("$watch");
+                   ngModelCtrl.$setViewValue({ unit: scope.unit, num: scope.num });
+                });
+
+                ////called when view changes
+                ngModelCtrl.$parsers.push(function(viewValue) {
+                    console.log(viewValue);
+                    var unit = viewValue.unit, num = viewValue.num, multiplier;
+                    multiplier = multiplierMap[unit];
+                    return num * multiplier;
+                });
+
+                ngModelCtrl.$validators.validCharacters = function(modelValue, viewValue) {
+                    console.log(modelValue);
+                    console.log(viewValue);
+                    var value = modelValue || viewValue;
+                    return /[0-9]+/.test(value) &&
+                            /[a-z]+/.test(value) &&
+                            /[A-Z]+/.test(value) &&
+                            /\W+/.test(value);
+                };
+            }
+        };
+    }
+
+    angular.module('myModule',[]).directive('timeDuration', TimeDurationDirective);
+
+
+</script>
+</body>
+</html>

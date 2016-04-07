@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div ng-app="myApp">
+    <div ng-controller="MyController">
+        <button ng-click="sayHello()">Hello</button>
+    </div>
+</div>
+
+<script>
+    // Load the app with the injector
+    var injector = angular.injector(['ng', 'myApp']);
+    // Load the $controller service with the injector
+    var $controller = injector.get('$controller');
+    var scope = injector.get('$rootScope').$new();
+    // Load the controller, passing in a scope
+    // which is how angular does it at runtime
+    var MyController = $controller('MyController', {$scope: scope})
+
+    injector.annotate(function($q, greeter) {});  //["$q", "greeter"]
+    injector.invoke(function($http, greeter) {}); //["$http", "greeter"]
+
+
+
+
+    var aControllerFactory =
+            function aController($scope, greeter) {
+                console.log("LOADED controller", greeter);
+        // ... Controller
+            };
+    aControllerFactory.$inject = ['$scope', 'greeter'];
+
+    // Greeter service
+    var greeterService = function() {
+        console.log("greeter service");
+    }
+
+    // Our app controller
+    angular.module('myApp', [])
+            .controller('MyController', aControllerFactory)
+            .factory('greeter', greeterService);
+
+    // Grab the injector and create a new scope
+    var injector = angular.injector(['ng', 'myApp']),
+            controller = injector.get('$controller'),
+            rootScope = injector.get('$rootScope'),
+            newScope = rootScope.$new();
+    // Invoke the controller
+    controller('MyController', {$scope: newScope});
+</script>
+</body>
+</html>

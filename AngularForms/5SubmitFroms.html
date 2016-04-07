@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Submit using ngSubmit</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="myapp">
+
+<!-----------------  ng-submit attribute to submit the form:   -------------->
+<!----------  Note that submit is fired only on the form element, not the button or submit input.
+                (Forms are submitted, not buttons.) ---------->
+
+<div style="margin: 50px 0"></div>
+<div  ng-controller="MyController">
+
+
+    <form ng-submit="myForm.submitTheForm1()">
+        <input type="text" id="name1" ng-model="myForm.name" ng-minlength="5" ng-maxlength="12"> Name <br/>
+
+        <select ng-model="myForm.car">
+            <option value="nissan">Nissan</option>
+            <option value="toyota">Toyota</option>
+            <option value="fiat">Fiat</option>
+        </select>
+
+        <input type="submit" value="Submit Form">
+    </form>
+
+    <script>
+        angular.module("myapp", [])
+                .controller("MyController", function($scope, $http) {
+                    $scope.myForm = {};
+                    $scope.myForm.name = "Jakob Jenkov";
+                    $scope.myForm.car  = "nissan";
+
+                    $scope.myForm.submitTheForm1 = function(item, event) {
+                        console.log("--> Submitting form");
+                        var dataObject = {
+                            name : $scope.myForm.name
+                            ,car  : $scope.myForm.car
+                        };
+
+                        var responsePromise = $http.post("/angularjs-examples/json-test-data.jsp", dataObject, {});
+                        responsePromise.success(function(dataFromServer, status, headers, config) {
+                            console.log(dataFromServer.title);
+                        });
+                        responsePromise.error(function(data, status, headers, config) {
+                            alert("Sorry Submitting the form failed!");
+                        });
+                    }
+
+                });
+    </script>
+</div>
+</body>
+</html>

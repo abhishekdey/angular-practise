@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ngOptions</title>
+    <script src="../angular.js"></script>
+</head>
+<body ng-app="app">
+
+<!--http://www.undefinednull.com/2014/08/11/a-brief-walk-through-of-the-ng-options-in-angularjs/-->
+<!--  The ngOptions attribute can be used to dynamically generate a list of <option> elements for the <select>
+element using the array or object obtained by evaluating the ngOptions comprehension expression. -->
+
+<!-- Advantages over ngRepeat like not creating a new scope for each repeated instance ,
+    more flexibility in how the <select>'s model is assigned via the select as part of the comprehension expression. -->
+
+
+<!-- Note: ngOptions provides an iterator facility for the ‘option’ element which should be used
+    instead of ngRepeat when you want the select model to be bound to a non-string value.
+    This is because an option element can only be bound to string values at present.
+
+    When an item in the <select> menu is selected, the array element or object property represented by
+    the selected option will be bound to the model identified by the ngModel directive.
+    -->
+
+<div ng-controller="Test">
+
+    <p>selected item is : {{selectedItem}}</p>
+    <p> age of selected item is : {{selectedItem.age}} </p>
+
+    <!--Now the selectedItem is bound to an object instead of the string value-->
+    <!--By default, ngModel watches the model by reference, not value.
+    This is important when binding any input directive to a model that is an object or a collection.-->
+    <select ng-model="selectedItem" ng-options="item.name for item in items">
+    </select>
+
+    <script>
+        var app = angular.module('app',[]);
+        app.controller('Test',function($scope){
+            $scope.items = [{name: 'one', age: 30 },{ name: 'two', age: 27 },{ name: 'three', age: 50 }];
+            $scope.selectedItem = $scope.items[0];
+        });
+    </script>
+
+
+    <!--
+    label for value in array
+    label group by group for value in array
+    select as label for value in array
+    label disable when disable for value in array
+    label group by group for value in array track by trackexpr
+    label disable when disable for value in array track by trackexpr
+    label for value in array | orderBy:orderexpr track by trackexpr (for including a filter with track by)
+-->
+</div>
+</body>
+</html>

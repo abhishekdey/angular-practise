@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="Demo">
+<head>
+    <meta charset="UTF-8">
+    <title>ngOptions For Array data</title>
+    <script src="../angular.js"></script>
+
+</head>
+
+
+<style type="text/css">
+        a[ ng-click ] {
+            cursor: pointer ;
+            text-decoration: underline ;
+        }
+    </style>
+</head>
+
+<!--  http://www.bennadel.com/blog/2556-using-track-by-with-ngrepeat-in-angularjs-1-2.htm
+
+      select as label group by group for value in array track by trackexpr
+      This is similar to the previous one, and the only addition is the track by.
+      The syntax and usage is same as with ng-repeat.
+
+      Using track by, we can explicitly tell AngularJS to track each DOM node by the specified value
+      Do not use select as and track by in the same expression. They are not designed to work together.
+-->
+
+<body ng-controller="AppController" >
+<h1>
+    Using Track-By With ngRepeat In AngularJS
+</h1>
+
+<h2>
+    Without Track-By
+</h2>
+<ul>
+    <!-- the vanilla ngRepeat list caused new DOM node creation with each rebuild.-->
+    <li
+            ng-repeat="friend in friendsOne"
+            bn-log-dom-creation="Without">
+        {{ friend.id }} &mdash; {{ friend.name }}
+    </li>
+</ul>
+
+
+<h2>
+    With Track-By
+</h2>
+
+<!--
+    This time, we're going to use the same data structure;
+    however, we're going to use the "track by" syntax to tell
+    AngularJS how to map the objects to the DOM node.
+    --
+    NOTE: You can also use a $scope-based function like:
+    ... track by identifier( item )
+-->
+<ul>
+    <!--The "track by" ngRepeat list, on the other hand, caused no subsequent DOM activity on rebuild-->
+    <!-- "track by" clause doesn't inject the $$hashKey expand property.-->
+    <li
+            ng-repeat="friend in friendsTwo track by friend.id"
+            bn-log-dom-creation="With">
+        {{ friend.id }} &mdash; {{ friend.name }}
+    </li>
+</ul>
+
+<p>
+    <a ng-click="rebuildFriends()">Rebuild Friends</a>
+</p>
+
+
+<!-- Load scripts. -->
+<script type="text/javascript">
+    var app = angular.module( "Demo", []);
+    app.controller(
+            "AppController",
+            function( $scope ) {
+                $scope.friendsOne = getFriends();
+                $scope.friendsTwo = getFriends();
+
+
+                // PUBLIC METHODS.
+                // I rebuild the collections, creating completely new arrays and Friend object instances.
+                $scope.rebuildFriends = function() {
+                    console.log( "Rebuilding..." );
+                    $scope.friendsOne = getFriends();
+                    $scope.friendsTwo = getFriends();
+                    // Log the friends collection so we can see how
+                    // AngularJS updates the objects.
+                    setTimeout(
+                            function() {
+                                console.dir( $scope.friendsOne );
+                                console.dir( $scope.friendsTwo );
+                            },
+                            50
+                    );
+                };
+
+                // PRIVATE METHODS.
+                // I create a new collection of friends.
+                function getFriends() {
+                    return([
+                        {
+                            id: 1,
+                            name: "Sarah"
+                        },
+                        {
+                            id: 2,
+                            name: "Tricia"
+                        },
+                        {
+                            id: 3,
+                            name: "Joanna"
+                        }
+                    ]);
+                }
+            }
+    );
+
+    // I simply log the creation / linking of a DOM node to
+    // illustrate the way the DOM nodes are created with the
+    // various tracking approaches.
+    app.directive(
+            "bnLogDomCreation",
+            function() {
+                // I bind the UI to the $scope.
+                function link( $scope, element, attributes ) {
+                    console.log(
+                            attributes.bnLogDomCreation,
+                            $scope.$index
+                    );
+                }
+                // Return the directive configuration.
+                return({
+                    link: link
+                });
+            }
+    );
+</script>
+
+</body>
+</html>

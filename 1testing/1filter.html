@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <script src="../angular.js"></script>
+    <title>Filtering</title>
+</head>
+<body>
+
+  <div ng-controller="Test">
+      <input type="text" ng-model="selectItem">
+      <select ng-model="selectedItem" ng-options="item.name for item in items"></select>
+      {{ 'ginger loves DOGg treats' | lowercase | isCapital }}
+  </div>
+
+<script>
+    var myApp = angular.module("myApp",[]);
+
+    myApp.controller('Test',function($scope){
+        $scope.items = [{name: 'one', age: 30 },{ name: 'two', age: 27 },{ name: 'three', age: 50 }];
+        $scope.selectedItem = $scope.items[0];
+    });
+
+    myApp.filter("isCapital" , function(){
+        return function(input) {
+        // input will be the string we pass in
+            if (input)
+                return input[0].toUpperCase() + input.slice(1);
+        }
+    })
+</script>
+</body>
+</html>

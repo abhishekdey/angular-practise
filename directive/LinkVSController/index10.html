@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="plunker">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Parent-Child Directive</title>
+    <script src="../../jquery.js"></script>
+    <script src="../../angular.js"></script>
+    <script>
+        var app = angular.module('plunker', []);
+
+        app.controller('MainCtrl', function($scope, $element) {});
+
+        app.directive('exampleDirective', function() {
+            return {
+                restrict: 'E',
+                template: '<child-directive></child-directive>',
+                controller: function($scope, $element){
+                    //this will not work, since the child directives link function was not yet run
+                    //DOM manipulation from the controller is bad thing
+                    //to "prepare" data for the view is good thing
+                    //business logic in services
+                    //after controller() --> link() comes
+                    $element.find('pre').text('hi there!');
+                },
+                link: function(scope, el){
+                    // the logic really belongs in link, as the child directive
+                    // uncomment this line to fix the problem
+                    // el.find('pre').text('hi there!')
+                }
+            }
+        });
+
+        app.directive('childDirective', function() {
+            return {
+                restrict:  'E',
+                template: '<h1>bar</h1>',
+                replace: true,
+                link: function($scope, $element, attr){
+                    // some awesome jquery plugin which replaces things and bits
+                    $element.replaceWith(angular.element('<pre>' +  $element.text() + '</pre>'));
+                }
+            }
+        });
+    </script>
+</head>
+
+<body ng-controller="MainCtrl">
+<example-directive></example-directive>
+(above should actually say "hi there", not "bar")
+</body>
+
+</html>

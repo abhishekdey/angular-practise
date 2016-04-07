@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div ng-app="myApp">
+    <div ng-controller="MyCtrl">
+        <div ng-click="setFTag()">Click Me</div>
+    </div>
+</div>
+
+<script>
+    var myApp = angular.module('myApp',[]);
+
+    myApp.service('myService', function() {
+        this.tags = {
+            a: true,
+            b: true
+        };
+
+
+        this.setFalseTag = function() {
+            alert("Within myService->setFalseTag");
+            this.tags.a = false;
+            this.tags.b = false;
+
+            //how do I get the watch in MyCtrl to be triggered?
+        };
+    });
+
+
+    myApp.controller('MyCtrl', function($scope, myService) {
+
+
+        $scope.setFTag = function() {
+            myService.setFalseTag();
+        };
+
+        $scope.$watch(function () {
+                    return myService.tags;
+                },
+                function(newVal, oldVal) {
+                    /*...*/
+                }, true);
+
+    });
+</script>
+</body>
+</html>

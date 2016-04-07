@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sanitizing HTML</title>
+    <script src="../angular.js"></script>
+    <script src="../angular-sanitize.js"></script>
+</head>
+<body ng-app="app">
+
+<section ng-controller="mainController as main">
+    <nav>
+        <ul>
+            <li ng-repeat="link in main.links"
+                ng-bind-html="link">
+            </li>
+        </ul>
+    </nav>
+</section>
+
+<script>
+
+    var app = angular.module("app", ["ngSanitize"]);
+
+    app.config(function($provide){
+        $provide.decorator("$sanitize", function($delegate, $log){
+            return function(text, target){
+
+                var result = $delegate(text, target);
+                $log.info("$sanitize input: " + text);
+                $log.info("$sanitize output: " + result);
+
+                return result;
+            };
+        });
+    });
+
+    app.controller("mainController", function() {
+        var main = this;
+        main.links = [
+            "<a onmouseover='...' href='http://google.com'>Google</a>",
+            "<a class='...' href='http://odetocode.com'>OdeToCode</a>",
+            "<a ng-click='...' href='http://twitter.com'>Twitter</a>"
+        ];
+    });
+
+    /*
+     With the decorator, we can see exactly what goes into $sanitize, and what comes out.
+     The mouseover attributes disappear, as does the ng-click directive.
+     $sanitize input: <a onmouseover='...' href='http://google.com'>Google</a>
+     $sanitize output: <a href="http://google.com">Google</a>
+
+     $sanitize input: <a class='...' href='http://odetocode.com'>OdeToCode</a>
+     $sanitize output: <a class="..." href="http://odetocode.com">OdeToCode</a>
+
+     $sanitize input: <a ng-click='...' href='http://twitter.com'>Twitter</a>
+     $sanitize output: <a href="http://twitter.com">Twitter</a>
+    */
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Example - example-heroComponentSimple-production</title>
+
+    <script src="../angular1.5.min.js"></script>
+
+    <script>
+        (function (angular) {
+            'use strict';
+            angular.module('heroApp', []).controller('mainCtrl', function () {
+                this.hero = {
+                    name: 'Spawn'
+                };
+            });
+        })(window.angular);
+    </script>
+
+    <script>
+        (function (angular) {
+            'use strict';
+            function HeroDetailController() {}
+
+            angular.module('heroApp').component('heroDetail', {
+                templateUrl: 'heroDetail.html',
+                controller: HeroDetailController,
+                bindings: {
+                    hero: '='
+                }
+            });
+        })(window.angular);
+    </script>
+
+</head>
+<body ng-app="heroApp">
+<!-- components match only elements -->
+<div ng-controller="mainCtrl as ctrl">
+    <b>Hero</b><br>
+    <hero-detail hero="ctrl.hero"></hero-detail>
+</div>
+</body>
+</html>

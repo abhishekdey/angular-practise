@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <script src="../angular.js"></script>
+    <title>ngSubmit- Submit</title>
+</head>
+<body ng-controller="MessageCtrl">
+<notification message="{{message}}"></notification>
+
+<br/>
+
+<span>This is the textbox on the directive</span>
+<book-comment text="commentText"></book-comment>
+
+<span>This is the textbox on the page</span>
+<input type="text" ng-model="commentText"/>
+
+<like-book like="likeFunction()"></like-book>
+<br/>
+
+
+<a><mouse-clicked ebook>Game of thrones (click me)</mouse-clicked></a><br/>
+
+<a><mouse-clicked magazine>PC World (click me)</mouse-clicked></a><br/>
+
+<script>
+
+    var app = angular.module('app', []);
+
+    app.controller("MessageCtrl", function ($scope) {
+        $scope.message = "Product created!";
+
+        $scope.likeFunction = function () {
+            alert("I like the book!")
+        }
+    });
+
+    app.directive("notification", function () {
+        return {
+            restrict: 'E',
+            scope: {
+                message: '@'
+            },
+            template: '<div class="alert">{{message}}</div>'
+        }
+    });
+
+    app.directive("bookComment", function () {
+        return {
+            restrict: 'E',
+            scope: {
+                text: '='
+            },
+            template: '<input type="text" ng-model="text"/>'
+        }
+    });
+
+    app.directive("likeBook", function () {
+        return {
+            restrict: 'E',
+            scope: {
+                like: '&'
+            },
+            template: '<input type="button" ng-click="like()" value="Like"/>'
+        }
+    });
+
+    app.directive('mouseClicked', function () {
+        return {
+            restrict: 'E',
+            scope: {},
+            controller: "MouseClickedCtrl as mouseClicked"
+        }
+    });
+
+    app.controller('MouseClickedCtrl', function ($element) {
+        var mouseClicked = this;
+
+        mouseClicked.bookType = null;
+
+        mouseClicked.setBookType = function (type) {
+            mouseClicked.bookType = type
+        };
+
+        $element.bind("click", function () {
+            alert("Typeof book: " + mouseClicked.bookType + " sent for statistical analysis!");
+        })
+    });
+
+    app.directive('ebook', function () {
+        return {
+            require: "mouseClicked",
+            link: function (scope, element, attrs, mouseClickedCtrl) {
+                mouseClickedCtrl.setBookType("EBOOK");
+            }
+        }
+    });
+
+    app.directive('magazine', function () {
+        return {
+            require: "mouseClicked",
+            link: function (scope, element, attrs, mouseClickedCtrl) {
+                mouseClickedCtrl.setBookType("MAGAZINE");
+            }
+        }
+    })
+
+</script>
+</body>
+</html>

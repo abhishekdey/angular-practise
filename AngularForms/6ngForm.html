@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Validation Without ngForm</title>
+    <script src="../angular.js"></script>
+    <link href="../bootstrap.min.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+
+
+<!--Typing into the form above, you can see that the fields are only valid when both become valid email addresses.-->
+<div class="container" ng-app="dynamicFormApp" ng-controller="mainController">
+
+    <div class="page-header">
+        <h3 class="text-danger">Non Dynamic Way</h3>
+        <p>All fields need to be filled in for the error to go away. It treats all of the fields as one input.</p>
+    </div>
+
+    <form name="userFormOne" novalidate>
+
+        <div class="form-group" ng-repeat="person in formDataOne.people" ng-class="{ 'has-error' : userFormOne.email.$invalid }">
+
+            <label>{{ person.name }}'s Email</label>
+            <input type="email" class="form-control" name="email" ng-model="person.email" required>
+            <p class="help-block" ng-show="userFormOne.email.$invalid">Valid Email Required</p>
+
+        </div>
+
+    </form>
+
+    <pre><code>
+        {{ formDataOne }}
+    </code></pre>
+</div>
+
+
+
+<script>
+    // sample data we would get back from an api
+    angular.module('dynamicFormApp', [])
+            .controller('mainController', function($scope) {
+                var people = [
+                    {
+                        name: 'Chris',
+                        email: ''
+                    },
+                    {
+                        name: 'Holly',
+                        email: ''
+                    }
+                ];
+
+                $scope.formDataOne = {};
+                $scope.formDataOne.people = people;
+
+            });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>Transclusion and Scopes</title>
+    <script src="../../angular.js"></script>
+</head>
+
+<!--http://www.angular-tips.com/blog/2014/03/transclusion-and-scopes/-->
+<script>
+    var app = angular.module("app",[]);
+    app.controller('MainCtrl', function($scope) {
+        $scope.person = {
+            name: 'John Doe',
+            profession: 'Fake name'
+        };
+
+        $scope.header = 'Person';
+    });
+
+
+    /*The misconception here is to think that the transcluded html has access to the isolated scope
+    or that the transcluded html is a new child scope of it.
+    The reality is that the transcluded html is a new child scope of the controller’s one.*/
+
+
+    /*Since we created a two-way databinding on the header, when we changed the header on the directive,
+    the controller’s one also changed.
+    That is why we saw Directive's header, because the controller’s header was also updated.*/
+
+    app.directive('person', function() {
+        return {
+            restrict: 'EA',
+            scope: {
+                header: '='
+            },
+            transclude:true,
+            template: '<div ng-transclude></div>',
+            link: function(scope, element, attrs) {
+                scope.person = {
+                    name: 'Directive Joe',
+                    profession: 'Scope guy'
+                };
+
+                scope.header = 'Directive\'s header';
+            }
+        };
+    });
+    app.directive('sidebox', function() {
+        return {
+            restrict: 'EA',
+            scope: {
+                title: '@'
+            },
+            transclude: true,
+            template: '<div class="sidebox">\
+                            <div class="content">\
+                            <h2 class="header">{{ title }}</h2>\
+                            <span class="content" ng-transclude>\
+                            </span>\
+                            </div>\
+                         </div>'
+        }
+    });
+
+</script>
+<body ng-controller="MainCtrl">
+<person header="header">
+    <h2>{{header}}</h2>
+    <p>Hello, I am {{person.name}} and,</p>
+    <p>I am a {{person.profession}}</p>
+</person>
+
+
+<div sidebox title="Links">
+    <ul>
+        <li>First link</li>
+        <li>Second link</li>
+    </ul>
+</div>
+</body>
+
+</html>

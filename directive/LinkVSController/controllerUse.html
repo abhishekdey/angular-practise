@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="plunker">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Parent-Child Directive</title>
+    <script src="../../angular.js"></script>
+    <script>
+        var app = angular.module('plunker', []);
+
+        app.controller('MainCtrl', function($scope, $element) {});
+
+        app.directive('exampleDirective', function() {
+            return {
+                restrict: 'E',
+                template: '<child-directive></child-directive>',
+                controller: function($scope, $element){
+                    this.awesomeVariable = "Awesome Content lives here!"
+                }
+            }
+        });
+
+        app.directive('childDirective', function() {
+            return {
+                restrict:  'E',
+                template: '<h1>bar</h1>',
+                replace: true,
+                require: '^exampleDirective',
+                link: function($scope, $element, attr, exampleDirectiveCtrl){
+                    // some awesome jquery plugin which replaces things and bits
+                    $element.replaceWith(angular.element('<pre>' +  exampleDirectiveCtrl.awesomeVariable + '</pre>'));
+                }
+            }
+        });
+    </script>
+</head>
+
+<body ng-controller="MainCtrl">
+    <example-directive></example-directive>
+</body>
+</html>

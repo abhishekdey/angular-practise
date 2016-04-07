@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scope Isolate using Prefixes</title>
+</head>
+<body>
+<div ng-app="app">
+
+    <!--MainCtrl creates the parent scope-->
+    <div class="parent" ng-controller="MainCtrl">
+        <div class="line">
+            Name inside parent scope is: <strong>{{name}}</strong>
+            <input type="button" ng-click="reverseName()" value="Reverse name" />
+        </div>
+        <div class="line">
+            Color inside parent scope is: <strong style="color:{{color}}">{{color|uppercase}}</strong>
+            <input type="button" ng-click="randomColor()" value="Randomize color" />
+        </div>
+
+        <!--parent scope has following properties and methods-->
+        <div class="directive" my-directive
+             name="{{name}}"
+             color="color"
+             reverse="reverseName()">
+         </div>
+    </div>
+</div>
+<script src="../angular.js"></script>
+<script>
+    /**
+     * Created by Abhishek Dey on 10/8/15.
+     */
+
+
+    var app = angular.module("app", []);
+
+    app.controller("MainCtrl", function( $scope ){
+        $scope.name = "Harry";
+        $scope.color = "#333333";
+        $scope.reverseName = function(){
+            $scope.name = $scope.name.split("").reverse().join("");
+        };
+        $scope.randomColor = function(){
+            $scope.color = '#'+Math.floor(Math.random()*16777215).toString(16);
+        };
+    });
+
+    app.directive("myDirective", function(){
+
+        return {
+            restrict: "EA",
+            /*scope object has some properties now*/
+            scope: {
+                name: "@",
+                color: "=",
+                reverse: "&"
+
+                /*
+                 After compilation
+
+                 <div my-directive
+                 class="directive"
+                 name="{{name}}"   i.e   name: "@parentName"
+                 reverse="reverseName()"
+                 color="color" >
+                 </div>
+                 */
+            },
+            template: [
+                "<div class='line'>",
+                "Name : <strong>{{name}}</strong>;  Change name:<input type='text' ng-model='name' /><br/>",
+                "</div><div class='line'>",
+                "Color : <strong style='color:{{color}}'>{{color|uppercase}}</strong>;  Change color:<input type='text' ng-model='color' /><br/></div>",
+                "<br/><input type='button' ng-click='reverse()' value='Reverse Name'/>"
+            ].join("")
+        };
+    });
+</script>
+</body>
+</html>
