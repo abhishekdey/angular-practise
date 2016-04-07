@@ -1,0 +1,11 @@
+<hr>
+<div>
+    Name: {{$ctrl.hero.name}}<br>
+    Location:
+    <editable-field field-value="$ctrl.hero.location" field-type="text"
+                    on-update="$ctrl.update('location', value)"></editable-field>
+    <br>
+
+    <!-- component doesn't delete the hero itself, but sends it back to the owner component via the correct event.-->
+    <button ng-click="$ctrl.onDelete({hero: $ctrl.hero})">Delete</button>
+</div>
