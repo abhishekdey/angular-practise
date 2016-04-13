@@ -11,7 +11,7 @@ angular.module( "GenderSelection" ).directive(
         });
 
         // I bind the JavaScript events to the scope.
-        function link( scope, element, attributes ) {
+        function link() {
             console.log( "Primary layout directive linking." );
         }
 

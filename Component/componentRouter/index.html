@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Component Router</title>
+</head>
+<body ng-app="app" ng-controller="AppController">
+
+<!-- Define a viewport and give it a name -->
+<div ng-viewport="nav"></div>
+<div ng-viewport="main"></div>
+
+</body>
+
+<script src="../../angular1.5.min.js"></script>
+<script src="../../componentRouter.js"></script>
+<script>
+    // Inject router in controller
+    angular.module('app', ['ngNewRouter'])
+            .controller('AppController', function ($router) {// Controller constructor
+                // Configure router, pass array of mappings
+                $router.config([
+                    {
+                        // Define url for this route
+                        path: '/',
+
+                        // Map components to viewports for this route
+                        components: {
+
+                            // Load home component in main viewport
+                            'main': 'home',
+                            'nav': 'nav'
+                        }
+                    },
+                    /*accepts an array so you can quickly configure multiple routes at once:*/
+                    {
+                        path: '/admin',
+                        components: {
+                            'main': 'admin'
+                        }
+                    }
+                ]);
+            }).controller('HomeController', function () {
+                console.log('Home Controller');
+            }).controller('AdminController', function () {
+                console.log('Admin Controller');
+            }).controller('NavController', function () {
+                console.log('Nav Controller');
+            });
+</script>
+</html>
