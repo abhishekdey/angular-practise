@@ -1,0 +1,68 @@
+
+<!--http://www.learnkode.com/Examples/Angular/Ng-Checked-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Welcome to LearnKode - A code learning platform</title>
+    <script src="../angular.js"></script>
+    <link rel="stylesheet" href="../bootstrap.min.css">
+<style>
+    .divStyle {
+        height: 60px;
+        width: 60px;
+        float: left;
+        margin: 5px;
+    }
+    span {
+        color: white;
+    }
+</style>
+</head>
+<body ng-app="checkedExample">
+    <div ng-controller="ExampleController">
+        <div class="container">
+            <div class="row">
+                <label>Delete All  <input type="checkbox" ng-model="master" /></label>
+                <div ng-repeat="div in noOfDivs">
+                    <div class="divStyle" style="background-color: maroon;" ng-click="toggle(div);div.checked=!div.checked">
+                        <input type="checkbox" ng-checked="master" ng-click="div.checked=!div.checked" ng-model="div.checked" />
+                        <span>IMG-{{div.name-1000}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <input type="button" class="btn btn-danger" ng-click="delete()" value="Delete" />
+            </div>
+        </div>
+    </div>
+    <script>
+    var app = angular.module("checkedExample", []);
+    app.controller('ExampleController', ['$scope', function ($scope) {
+        $scope.noOfDivs = [];
+        for (var i = 1000; i <= 1025; i++) {
+            $scope.noOfDivs.push({ name: i });
+        };
+        $scope.selectedDiv = [];
+        $scope.toggle = function (id) {
+            var index = $scope.selectedDiv.indexOf(id);
+            if (index > -1)
+                $scope.selectedDiv.splice(index, 1);
+            else
+                $scope.selectedDiv.push(id);
+        };
+        $scope.delete = function () {
+            if ($scope.master)
+                $scope.noOfDivs = [];
+            else {
+                for (var i = 0; i < $scope.selectedDiv.length; i++) {
+                    var idx = $scope.noOfDivs.indexOf($scope.selectedDiv[i]);
+                    $scope.noOfDivs.splice(idx, 1);
+                };
+                $scope.selectedDiv = [];
+            };
+        };
+    }]);
+</script>
+</body>
+</html>
+

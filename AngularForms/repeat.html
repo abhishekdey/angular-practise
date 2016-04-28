@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div ng-app="currentApp">
+    <div ng-controller="ACtrl">
+        <div ng-repeat="step in rowValue">
+            <div ng-repeat="(key, value) in step">
+                {{key}} : {{value}}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="../angular1.5.min.js"></script>
+<script>
+    var currentApp = angular.module('currentApp', []);
+    currentApp.controller('ACtrl', function($scope){
+
+        $scope.rowValue = [{
+            'geography': 'United States of America',
+            'accounts': '$2,300.00',
+            'purchase': null,
+            'expense': 'null',
+            'spend': '$2,300.00'
+        }, {
+            'geography': 'United Kingdom',
+            'accounts': '$2,300.00',
+            'purchase': null,
+            'expense': '$5,500.90',
+            'spend': '$7,800.00'
+        }];
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../../angular.js"></script>
+    <script>var app = angular.module("app", []);
+
+    app.directive("server", function() {
+        return {
+            controller: function() {
+                this.log = function(message) {
+                    console.log(message);
+                };
+            }
+        };
+    });
+
+    app.directive("client", function() {
+        return {
+            require: "server",
+            link: function($scope, $elem, $attrs, serverController) {
+                serverController.log("Hello, this is client!");
+            }
+        };
+    });</script>
+    <meta charset="utf-8">
+    <title>Two directives on a single element --- Requiring a controller</title>
+</head>
+<body ng-app="app">
+<div server client></div>
+</body>
+</html>

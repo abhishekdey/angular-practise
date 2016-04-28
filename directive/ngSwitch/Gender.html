@@ -34,7 +34,21 @@
 </div>
 
 <script src="../angular.js"></script>
-<script src="gender.js"></script>
+<script>
+    angular.module('GenderSelection', [])
+            .controller('GenderSelectionController', ['$scope', function ($scope) {
+                $scope.gender = {
+                    save : function(){
+                        console.log($scope.gender);
+                    }
+                };
+
+                $scope.$watch('gender.type', function (newVal) {
+                    /* if (newVal)
+                     console.log(newVal);*/
+                });
+            }]);
+</script>
 <script src="primary-layout.directive.js"></script>
 <script src="secondary-layout.directive.js"></script>
 </body>

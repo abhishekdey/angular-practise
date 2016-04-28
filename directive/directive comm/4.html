@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../../angular.js"></script>
+    <script>var app = angular.module("app", []);
+
+    app.directive("server", function () {
+        return {
+            controller: function () {
+                this.log = function (message) {
+                    console.log(message);
+                };
+            }
+        };
+    });
+
+    app.directive("client", function () {
+        return {
+            require: "^server",
+            link: function ($scope, $elem, $attrs, serverCtrl) {
+                serverCtrl.log("Hello, this is the client!");
+            }
+        };
+    });</script>
+    <meta charset="utf-8">
+    <title>Accessing a directive on a parent element --- Requiring a controller</title>
+</head>
+<body ng-app="app">
+<div server>
+    <div client></div>
+</div>
+</body>
+</html>

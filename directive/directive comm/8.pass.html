@@ -1,0 +1,59 @@
+<!--http://stackoverflow.com/questions/30112969/angularjs-event-based-communication-through-isolate-scope-->
+
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta charset="utf-8"/>
+    <title>AngularJS Plunker</title>
+    <script>document.write('<base href="' + document.location + '" />');</script>
+    <link href="style.css" rel="stylesheet"/>
+    <script data-semver="1.2.21" src="../../angular.js"></script>
+    <script>
+        (function () {
+            var app = angular.module('myApp', []);
+
+            app.directive("firstDir", function () {
+                return {
+                    restrict: 'E',
+                    controller: function ($scope) {
+                        $scope.set = function () {
+                            $scope.$root.$broadcast('MY_NEW_SEARCH', $scope.searchQuery);
+                        }
+                    },
+                    template: '<input type="text" ng-model="searchQuery"><button ng-click="set()">Change Value</button>'
+                };
+            });
+
+         /*The way to propagate an isolated scope to the inner HTML is by using this snippet within the link function:*/
+            app.directive("secondDir", function () {
+                return {
+                    restrict: 'E',
+                    scope: {},
+                    transclude: true,
+                    link: function (scope, element, attrs, ctrl, transclude) {
+                        transclude(scope, function (clone) {
+                            element.append(clone);
+                        });
+                    },
+                    controller: function ($scope) {
+                        var _that = $scope;
+                        $scope.$on('MY_NEW_SEARCH', function (e, data) {
+                            console.log('BOUM', data);
+                            _that.data = data;
+                        });
+                        $scope.data = 'init value';
+                    }
+                };
+            });
+        })();
+    </script>
+</head>
+<body ng-app="myApp">
+<div>First Directive:
+    <first-dir></first-dir>
+</div>
+<div>Second Directive:
+    <second-dir><h3>{{data}}</h3></second-dir>
+</div>
+</body>
+</html>
