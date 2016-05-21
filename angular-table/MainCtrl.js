@@ -18,6 +18,7 @@ app.controller('MainCtrl', ['$scope', '$http', function ($scope, $http) {
         $scope.gridOptions.data.push(tempData);
     };
 
+    
     $http.get('classificationDetails.json')
         .success(function (data) {
             $scope.classificationList = data;
